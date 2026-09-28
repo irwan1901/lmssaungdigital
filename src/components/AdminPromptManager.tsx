@@ -61,9 +61,7 @@ export const AdminPromptManager: React.FC<AdminPromptManagerProps> = ({
   const [formDescription, setFormDescription] = useState('');
   const [formPromptText, setFormPromptText] = useState('');
   const [formTags, setFormTags] = useState('');
-  const [formPreviewType, setFormPreviewType] = useState<
-    'matrix' | 'grid' | 'starfield' | 'particles' | 'glow-card' | 'generic'
-  >('matrix');
+  const [formPreviewType, setFormPreviewType] = useState<string>('matrix');
   const [formVariables, setFormVariables] = useState<
     { name: string; defaultValue: string; description: string }[]
   >([]);
@@ -589,28 +587,36 @@ export const AdminPromptManager: React.FC<AdminPromptManagerProps> = ({
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-300">Tipe Visual Preview</label>
+                  <label className="text-[11px] font-bold text-slate-300">Tipe Visual Preview (24 Efek Unik)</label>
                   <select
                     value={formPreviewType}
-                    onChange={(e) =>
-                      setFormPreviewType(
-                        e.target.value as
-                          | 'matrix'
-                          | 'grid'
-                          | 'starfield'
-                          | 'particles'
-                          | 'glow-card'
-                          | 'generic'
-                      )
-                    }
+                    onChange={(e) => setFormPreviewType(e.target.value)}
                     className="w-full px-3 py-2 bg-[#050c18] border border-sky-800/60 rounded-xl text-xs text-white font-medium focus:outline-none focus:border-sky-400 cursor-pointer"
                   >
-                    <option value="matrix">Matrix Rain</option>
-                    <option value="grid">Cyber Grid</option>
-                    <option value="starfield">Starfield 3D</option>
-                    <option value="particles">Neon Particles</option>
-                    <option value="glow-card">Glow Card UI</option>
-                    <option value="generic">Generic Code</option>
+                    <option value="matrix">Matrix Rain (Canvas Stream)</option>
+                    <option value="cyber-grid">Cyber Grid 3D Horizon</option>
+                    <option value="starfield-warp">Starfield Warp Speed 3D</option>
+                    <option value="constellation-nodes">Constellation Particle Network</option>
+                    <option value="neon-tunnel">Infinite Neon Hex Tunnel</option>
+                    <option value="audio-equalizer">Cyberpunk 3D Spectrum Audio Visualizer</option>
+                    <option value="aurora-waves">Aurora Borealis Fluid Waves</option>
+                    <option value="laser-scanner">Holographic Laser Grid Scanner</option>
+                    <option value="dna-helix">3D Molecular DNA Double Helix</option>
+                    <option value="liquid-blob">Bioluminescent Liquid Blob</option>
+                    <option value="hud-radar">Tactical Sonar Radar & Telemetry</option>
+                    <option value="particle-vortex">Cosmic Gravitational Particle Vortex</option>
+                    <option value="spotlight-card">Spotlight & Prism Glass Card</option>
+                    <option value="glitch-terminal">Retro Cyberpunk CRT Glitch Terminal</option>
+                    <option value="isometric-city">3D Isometric Cyber City Wireframe</option>
+                    <option value="magnetic-button">Magnetic Spring Physics Button</option>
+                    <option value="tesseract-cube">4D Rotating Wireframe Tesseract</option>
+                    <option value="firefly-forest">Bioluminescent Firefly Forest</option>
+                    <option value="nixie-clock">Cyber Nixie Tube Digital HUD Clock</option>
+                    <option value="sonic-ripples">Acoustic Shockwave Sonic Ripples</option>
+                    <option value="circuit-board">High-Tech PCB Circuit Board Currents</option>
+                    <option value="energy-shield">Sci-Fi Hex Honeycomb Energy Shield</option>
+                    <option value="quantum-strings">Quantum Harmonic Wave Strings</option>
+                    <option value="orbital-rings">Gyroscopic Orbital Core & Rings</option>
                   </select>
                 </div>
               </div>

@@ -109,7 +109,7 @@ export interface PromptItem {
   tags: string[];
   variables?: { name: string; defaultValue: string; description: string }[];
   isCustom?: boolean;
-  previewType?: 'matrix' | 'grid' | 'starfield' | 'particles' | 'glow-card' | 'generic';
+  previewType?: string;
 }
 
 export interface ToolItem {

@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { PromptItem, MemberUser, PromptLibraryConfig } from '../types';
 import { DEFAULT_PROMPTS } from '../data/defaultPrompts';
+import { loadPrompts } from '../services/googleSheetsSync';
 import { SaungDigitalLogo } from './SaungDigitalLogo';
 import { LivePreviewModal } from './LivePreviewModal';
 
@@ -51,13 +52,7 @@ export const PromptLibrary: React.FC<PromptLibraryProps> = ({
 }) => {
   // Load custom + initial prompts
   const [localPrompts] = useState<PromptItem[]>(() => {
-    try {
-      const saved = localStorage.getItem('saung_digital_prompts_v2');
-      if (saved) return JSON.parse(saved);
-      return DEFAULT_PROMPTS;
-    } catch {
-      return DEFAULT_PROMPTS;
-    }
+    return loadPrompts();
   });
 
   const prompts = externalPrompts && externalPrompts.length > 0 ? externalPrompts : localPrompts;

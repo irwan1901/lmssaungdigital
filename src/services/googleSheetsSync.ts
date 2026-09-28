@@ -545,8 +545,36 @@ export function loadPrompts(): PromptItem[] {
       return DEFAULT_PROMPTS;
     }
     const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) return DEFAULT_PROMPTS;
-    return deduplicatePrompts(parsed);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      savePrompts(DEFAULT_PROMPTS);
+      return DEFAULT_PROMPTS;
+    }
+
+    // Merge default prompts with stored prompts so new prompts and updated previewTypes appear
+    const map = new Map<string, PromptItem>();
+    DEFAULT_PROMPTS.forEach((p) => map.set(p.id, p));
+
+    parsed.forEach((stored: PromptItem) => {
+      if (stored && stored.id) {
+        const def = map.get(stored.id);
+        if (def) {
+          // If stored has generic/missing previewType, update to default unique previewType
+          map.set(stored.id, {
+            ...def,
+            ...stored,
+            previewType: def.previewType || stored.previewType,
+          });
+        } else {
+          // User-created custom prompt
+          map.set(stored.id, stored);
+        }
+      }
+    });
+
+    const merged = Array.from(map.values());
+    const unique = deduplicatePrompts(merged);
+    savePrompts(unique);
+    return unique;
   } catch {
     return DEFAULT_PROMPTS;
   }
