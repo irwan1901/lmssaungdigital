@@ -1,0 +1,6 @@
+{
+  "name": "SAMA DIGI - Learning Center",
+  "description": "Portal Materi & Video Pembelajaran digital modern dengan integrasi database Google Sheets & Apps Script real-time.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

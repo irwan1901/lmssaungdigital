@@ -1,0 +1,425 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" style="background:#030712;">
+  <defs>
+    <!-- Background Gradients -->
+    <radialGradient id="skyGlow" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#071b38" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#040c1a" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#02050d" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="neonCyanGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.4"/>
+      <stop offset="60%" stop-color="#0284c7" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="neonGreenGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4ade80" stop-opacity="0.35"/>
+      <stop offset="70%" stop-color="#16a34a" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Neon Text Gradients -->
+    <linearGradient id="neonGreenText" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#86efac"/>
+      <stop offset="35%" stop-color="#4ade80"/>
+      <stop offset="75%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+    <linearGradient id="neonBlueBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="40%" stop-color="#38bdf8"/>
+      <stop offset="80%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="woodBeams" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#451a03"/>
+      <stop offset="50%" stop-color="#291204"/>
+      <stop offset="100%" stop-color="#190a02"/>
+    </linearGradient>
+    <linearGradient id="tableGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#54280f"/>
+      <stop offset="25%" stop-color="#3c1a07"/>
+      <stop offset="60%" stop-color="#271004"/>
+      <stop offset="100%" stop-color="#130601"/>
+    </linearGradient>
+    <linearGradient id="holoScreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0369a1" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#082f49" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.2"/>
+    </linearGradient>
+
+    <!-- Glow Filters -->
+    <filter id="intenseGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur1"/>
+      <feGaussianBlur stdDeviation="6" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ========================================================================= -->
+  <!-- 1. BASE BACKGROUND & CEILING ARCHITECTURE                                 -->
+  <!-- ========================================================================= -->
+  <rect width="1280" height="800" fill="url(#skyGlow)"/>
+
+  <!-- City Skyline Silhouette in Distance -->
+  <g opacity="0.35" transform="translate(0, 320)">
+    <rect x="80" y="40" width="45" height="120" fill="#0c1d36"/>
+    <rect x="140" y="20" width="60" height="140" fill="#0f2442"/>
+    <rect x="220" y="60" width="40" height="100" fill="#0a182c"/>
+    <rect x="1000" y="30" width="55" height="130" fill="#0f2442"/>
+    <rect x="1070" y="55" width="40" height="105" fill="#0c1d36"/>
+    <rect x="1130" y="15" width="70" height="145" fill="#091526"/>
+    <!-- City lights bokeh -->
+    <circle cx="110" cy="90" r="1.5" fill="#38bdf8"/>
+    <circle cx="160" cy="50" r="1.5" fill="#facc15"/>
+    <circle cx="180" cy="75" r="1.5" fill="#4ade80"/>
+    <circle cx="1025" cy="65" r="1.5" fill="#38bdf8"/>
+    <circle cx="1150" cy="45" r="1.5" fill="#facc15"/>
+  </g>
+
+  <!-- Wooden Gazebo Rafters (Traditional Saung Bamboo / Wood Truss) -->
+  <g stroke="#3a1e0b" stroke-width="8" opacity="0.85">
+    <!-- Main Peak Diagonal Beams -->
+    <line x1="640" y1="20" x2="20" y2="350"/>
+    <line x1="640" y1="20" x2="1260" y2="350"/>
+    <!-- Secondary Diagonal Struts -->
+    <line x1="640" y1="40" x2="180" y2="350" stroke-width="5" opacity="0.7"/>
+    <line x1="640" y1="40" x2="1100" y2="350" stroke-width="5" opacity="0.7"/>
+    <line x1="640" y1="60" x2="340" y2="350" stroke-width="4" opacity="0.6"/>
+    <line x1="640" y1="60" x2="940" y2="350" stroke-width="4" opacity="0.6"/>
+    <!-- Horizontal Cross Tie -->
+    <line x1="120" y1="260" x2="1160" y2="260" stroke="#45240e" stroke-width="9"/>
+    <!-- Vertical Support Pillars -->
+    <line x1="150" y1="260" x2="150" y2="600" stroke="#45240e" stroke-width="12"/>
+    <line x1="1130" y1="260" x2="1130" y2="600" stroke="#45240e" stroke-width="12"/>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- 2. LEFT CYBER BOARD: BELAJAR • BERKARYA • BERBAGI                         -->
+  <!-- ========================================================================= -->
+  <g transform="translate(60, 150)">
+    <!-- Wooden board backing -->
+    <rect width="135" height="290" rx="14" fill="#0d1b2a" stroke="#0284c7" stroke-width="3" filter="url(#softGlow)"/>
+    <rect x="5" y="5" width="125" height="280" rx="10" fill="#06121e" stroke="#0369a1" stroke-width="1.5"/>
+
+    <!-- Hanging Chains -->
+    <line x1="25" y1="-40" x2="25" y2="0" stroke="#64748b" stroke-width="3"/>
+    <line x1="110" y1="-40" x2="110" y2="0" stroke="#64748b" stroke-width="3"/>
+
+    <!-- Robot Head Outline Icon -->
+    <rect x="42" y="25" width="50" height="42" rx="12" fill="#0a1d36" stroke="#38bdf8" stroke-width="2.5"/>
+    <circle cx="56" cy="44" r="4.5" fill="#38bdf8"/>
+    <circle cx="78" cy="44" r="4.5" fill="#38bdf8"/>
+    <line x1="67" y1="12" x2="67" y2="25" stroke="#38bdf8" stroke-width="2.5"/>
+    <circle cx="67" cy="12" r="3" fill="#38bdf8"/>
+    <rect x="54" y="56" width="26" height="3" rx="1.5" fill="#38bdf8"/>
+
+    <!-- Cyber Pillars Text -->
+    <text x="67" y="105" fill="#e0f2fe" font-size="13" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="1.5">BELAJAR</text>
+    <text x="67" y="145" fill="#e0f2fe" font-size="13" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="1.5">BERKARYA</text>
+    <text x="67" y="185" fill="#e0f2fe" font-size="13" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="1.5">BERBAGI</text>
+
+    <!-- Code bracket symbol -->
+    <g transform="translate(67, 240)">
+      <circle cx="0" cy="0" r="22" fill="#0369a1" fill-opacity="0.3" stroke="#38bdf8" stroke-width="2"/>
+      <text x="0" y="8" fill="#38bdf8" font-size="22" font-weight="900" text-anchor="middle" font-family="monospace">&lt;/&gt;</text>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- 3. RIGHT CYBER BOARD: ANDROID • CODING • AI & IOT • ROBOTICS              -->
+  <!-- ========================================================================= -->
+  <g transform="translate(1085, 150)">
+    <!-- Wooden board backing -->
+    <rect width="135" height="290" rx="14" fill="#0d2316" stroke="#22c55e" stroke-width="3" filter="url(#softGlow)"/>
+    <rect x="5" y="5" width="125" height="280" rx="10" fill="#05170d" stroke="#16a34a" stroke-width="1.5"/>
+
+    <!-- Hanging Chains -->
+    <line x1="25" y1="-40" x2="25" y2="0" stroke="#64748b" stroke-width="3"/>
+    <line x1="110" y1="-40" x2="110" y2="0" stroke="#64748b" stroke-width="3"/>
+
+    <!-- Android Head Icon -->
+    <g transform="translate(67, 45)">
+      <path d="M-22 6 A 22 22 0 0 1 22 6 Z" fill="#22c55e"/>
+      <circle cx="-9" cy="-4" r="3" fill="#05170d"/>
+      <circle cx="9" cy="-4" r="3" fill="#05170d"/>
+      <line x1="-14" y1="-9" x2="-21" y2="-19" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="14" y1="-9" x2="21" y2="-19" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+
+    <!-- Pillar Topics Text -->
+    <text x="67" y="105" fill="#dcfce7" font-size="12" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="1">ANDROID</text>
+    <text x="67" y="142" fill="#dcfce7" font-size="12" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="1">CODING</text>
+    <text x="67" y="179" fill="#dcfce7" font-size="12" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="1">AI &amp; IOT</text>
+    <text x="67" y="216" fill="#dcfce7" font-size="12" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="1">ROBOTICS</text>
+
+    <!-- Wifi Antenna Icon -->
+    <g transform="translate(67, 255)">
+      <path d="M-15 -10 A 18 18 0 0 1 15 -10" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M-10 -4 A 12 12 0 0 1 10 -4" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="0" cy="3" r="3" fill="#4ade80"/>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- 4. CENTERPIECE: GLOWING NEON "SAUNG DIGITAL" EMBLEM                      -->
+  <!-- ========================================================================= -->
+  <g transform="translate(640, 160)">
+    <!-- Ambient back glow for crest -->
+    <ellipse cx="0" cy="15" rx="350" ry="140" fill="url(#neonCyanGlow)"/>
+
+    <!-- Outer House Shape Contour with Neon Blue Glow -->
+    <path d="M0 -120 L300 -10 L300 135 L-300 135 L-300 -10 Z" fill="#061224" stroke="url(#neonBlueBorder)" stroke-width="8" filter="url(#intenseGlow)"/>
+    <path d="M0 -108 L285 -4 L285 125 L-285 125 L-285 -4 Z" fill="#091b33" stroke="#0ea5e9" stroke-width="2.5"/>
+
+    <!-- Circuit Roof Chimney / Antenna at apex -->
+    <g transform="translate(0, -68)">
+      <!-- Circuit paths -->
+      <path d="M0 0 V-28" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round"/>
+      <circle cx="0" cy="-28" r="5" fill="#38bdf8"/>
+      <path d="M0 -12 H-28 V-32" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="-28" cy="-32" r="4" fill="#38bdf8"/>
+      <path d="M0 -12 H28 V-32" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="28" cy="-32" r="4" fill="#38bdf8"/>
+      <path d="M-15 0 V-8" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M15 0 V-8" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+
+    <!-- Bold 3D "SAUNG" in crisp gleaming white -->
+    <text x="0" y="24" fill="#040b15" font-size="78" font-weight="950" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="6">SAUNG</text>
+    <text x="0" y="20" fill="#ffffff" font-size="78" font-weight="950" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="6" filter="url(#softGlow)">SAUNG</text>
+
+    <!-- Bold 3D "DIGITAL" in vibrant neon lime-green -->
+    <text x="0" y="86" fill="#052e16" font-size="72" font-weight="950" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="8">DIGITAL</text>
+    <text x="0" y="82" fill="url(#neonGreenText)" font-size="72" font-weight="950" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="8" filter="url(#intenseGlow)">DIGITAL</text>
+
+    <!-- Dark Pill Banner with Tagline: KOLABORASI • INOVASI • TEKNOLOGI • MASA DEPAN -->
+    <rect x="-240" y="100" width="480" height="26" rx="13" fill="#030b17" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="0" y="117" fill="#7dd3fc" font-size="11.5" font-weight="800" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" letter-spacing="2">
+      KOLABORASI  •  INOVASI  •  TEKNOLOGI  •  MASA DEPAN
+    </text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- 5. POLISHED WORKSHOP TABLE & HOLOGRAPHIC ENVIRONMENT                      -->
+  <!-- ========================================================================= -->
+  <!-- Table Top Oval Perspective Surface -->
+  <ellipse cx="640" cy="650" rx="600" ry="210" fill="url(#tableGradient)" stroke="#854d0e" stroke-width="4"/>
+  <ellipse cx="640" cy="650" rx="585" ry="195" fill="none" stroke="#ca8a04" stroke-width="1" opacity="0.3"/>
+
+  <!-- ========================================================================= -->
+  <!-- 6. HOLOGRAPHIC DATA DISPLAY PANELS (Floating above table)                 -->
+  <!-- ========================================================================= -->
+  <!-- Left Holo Display: Cloud & Metrics -->
+  <g transform="translate(300, 400)">
+    <rect x="0" y="0" width="180" height="130" rx="10" fill="url(#holoScreen)" stroke="#38bdf8" stroke-width="2" filter="url(#softGlow)"/>
+    <!-- Header -->
+    <rect x="0" y="0" width="180" height="22" rx="10" fill="#0369a1" fill-opacity="0.4"/>
+    <text x="12" y="15" fill="#7dd3fc" font-size="8.5" font-weight="800" font-family="monospace">SAUNG DIGITAL SYSTEM</text>
+
+    <!-- Cloud Upload Graphic -->
+    <path d="M30 45 Q36 34 50 36 Q60 28 72 38 Q82 34 85 45 H28 Z" fill="#0284c7" opacity="0.7"/>
+    <line x1="56" y1="52" x2="56" y2="40" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+    <path d="M51 45 L56 39 L61 45" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Bar Chart Metrics -->
+    <rect x="95" y="44" width="10" height="20" rx="2" fill="#38bdf8"/>
+    <rect x="110" y="34" width="10" height="30" rx="2" fill="#38bdf8"/>
+    <rect x="125" y="24" width="10" height="40" rx="2" fill="#4ade80"/>
+    <rect x="140" y="38" width="10" height="26" rx="2" fill="#38bdf8"/>
+
+    <!-- Pie Chart & Terminal lines -->
+    <circle cx="50" cy="92" r="18" fill="none" stroke="#38bdf8" stroke-width="6" stroke-dasharray="45 70"/>
+    <circle cx="50" cy="92" r="18" fill="none" stroke="#22c55e" stroke-width="6" stroke-dasharray="25 90" stroke-dashoffset="-45"/>
+    <line x1="85" y1="82" x2="160" y2="82" stroke="#38bdf8" stroke-width="2" opacity="0.6"/>
+    <line x1="85" y1="92" x2="145" y2="92" stroke="#38bdf8" stroke-width="2" opacity="0.6"/>
+    <line x1="85" y1="102" x2="155" y2="102" stroke="#4ade80" stroke-width="2" opacity="0.6"/>
+  </g>
+
+  <!-- Center-Right Holo Display: Android & "INNOVATE BUILD INSPIRE" -->
+  <g transform="translate(680, 400)">
+    <rect x="0" y="0" width="180" height="130" rx="10" fill="url(#holoScreen)" stroke="#22c55e" stroke-width="2" filter="url(#softGlow)"/>
+    <rect x="0" y="0" width="180" height="22" rx="10" fill="#15803d" fill-opacity="0.4"/>
+    <text x="12" y="15" fill="#86efac" font-size="8.5" font-weight="800" font-family="monospace">INNOVATE BUILD INSPIRE</text>
+
+    <!-- Large Glowing Android Silhouette in HUD ring -->
+    <circle cx="90" cy="74" r="36" fill="none" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <g transform="translate(90, 74)">
+      <!-- Head -->
+      <path d="M-15 -6 A 15 15 0 0 1 15 -6 Z" fill="#22c55e"/>
+      <circle cx="-6" cy="-12" r="2" fill="#041209"/>
+      <circle cx="6" cy="-12" r="2" fill="#041209"/>
+      <line x1="-9" y1="-17" x2="-14" y2="-23" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="9" y1="-17" x2="14" y2="-23" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- Body -->
+      <rect x="-15" y="-3" width="30" height="24" rx="4" fill="#22c55e"/>
+      <!-- Arms -->
+      <rect x="-21" y="-3" width="4" height="18" rx="2" fill="#22c55e"/>
+      <rect x="17" y="-3" width="4" height="18" rx="2" fill="#22c55e"/>
+      <!-- Legs -->
+      <rect x="-10" y="23" width="5" height="10" rx="2.5" fill="#22c55e"/>
+      <rect x="5" y="23" width="5" height="10" rx="2.5" fill="#22c55e"/>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- 7. THREE CUTE ANDROID ROBOTS                                              -->
+  <!-- ========================================================================= -->
+  <!-- ROBOT 1 (LEFT): Seated typing on Laptop -->
+  <g transform="translate(180, 480)">
+    <!-- Body & Torso -->
+    <ellipse cx="65" cy="140" rx="40" ry="46" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3"/>
+    <ellipse cx="65" cy="140" rx="26" ry="32" fill="#0f172a"/>
+    <circle cx="65" cy="140" r="12" fill="#38bdf8" filter="url(#softGlow)"/>
+
+    <!-- Head -->
+    <ellipse cx="65" cy="65" rx="55" ry="48" fill="#f8fafc" stroke="#e2e8f0" stroke-width="3"/>
+    <!-- Visor -->
+    <rect x="22" y="42" width="86" height="42" rx="21" fill="#091426"/>
+    <!-- Glowing Visor Eyes (Cyan smile curves) -->
+    <path d="M36 62 Q45 52 54 62" stroke="#38bdf8" stroke-width="5" stroke-linecap="round" fill="none" filter="url(#softGlow)"/>
+    <path d="M76 62 Q85 52 94 62" stroke="#38bdf8" stroke-width="5" stroke-linecap="round" fill="none" filter="url(#softGlow)"/>
+    <!-- Head Antennas -->
+    <line x1="38" y1="20" x2="28" y2="2" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="28" cy="2" r="5" fill="#38bdf8"/>
+    <line x1="92" y1="20" x2="102" y2="2" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="102" cy="2" r="5" fill="#38bdf8"/>
+
+    <!-- Arms & Hands typing -->
+    <ellipse cx="115" cy="130" rx="14" ry="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+    <ellipse cx="140" cy="145" rx="12" ry="10" fill="#f8fafc"/>
+
+    <!-- Laptop with Glowing Android Logo -->
+    <polygon points="120,170 215,170 195,115 135,115" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+    <polygon points="110,170 225,170 235,182 100,182" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+    <!-- Glowing Android Logo on Laptop Screen Lid -->
+    <g transform="translate(165, 142)">
+      <circle cx="0" cy="0" r="10" fill="#22c55e" filter="url(#softGlow)"/>
+      <path d="M-6 -2 A 6 6 0 0 1 6 -2 Z" fill="#06120b"/>
+    </g>
+  </g>
+
+  <!-- ROBOT 2 (CENTER): Standing Instructor Pointing to Holo Display -->
+  <g transform="translate(560, 440)">
+    <!-- Body -->
+    <ellipse cx="70" cy="140" rx="38" ry="46" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3"/>
+    <ellipse cx="70" cy="140" rx="22" ry="28" fill="#0f172a"/>
+    <circle cx="70" cy="140" r="10" fill="#4ade80" filter="url(#softGlow)"/>
+
+    <!-- Head -->
+    <ellipse cx="70" cy="60" rx="52" ry="46" fill="#f8fafc" stroke="#e2e8f0" stroke-width="3"/>
+    <!-- Visor -->
+    <rect x="30" y="38" width="80" height="40" rx="20" fill="#091426"/>
+    <!-- Glowing Visor Eyes (Green smile curves) -->
+    <path d="M42 58 Q50 48 58 58" stroke="#4ade80" stroke-width="5" stroke-linecap="round" fill="none" filter="url(#softGlow)"/>
+    <path d="M82 58 Q90 48 98 58" stroke="#4ade80" stroke-width="5" stroke-linecap="round" fill="none" filter="url(#softGlow)"/>
+    <!-- Antennas -->
+    <line x1="45" y1="18" x2="36" y2="4" stroke="#94a3b8" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="36" cy="4" r="4.5" fill="#4ade80"/>
+    <line x1="95" y1="18" x2="104" y2="4" stroke="#94a3b8" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="104" cy="4" r="4.5" fill="#4ade80"/>
+
+    <!-- Left Arm Holding Tablet -->
+    <rect x="25" y="115" width="22" height="35" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+
+    <!-- Right Arm Gesturing / Pointing at Hologram -->
+    <line x1="105" y1="125" x2="155" y2="90" stroke="#f8fafc" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="155" cy="90" r="8" fill="#4ade80" filter="url(#softGlow)"/>
+  </g>
+
+  <!-- ROBOT 3 (RIGHT): Seated working on Tablet / Stylus -->
+  <g transform="translate(930, 480)">
+    <!-- Body -->
+    <ellipse cx="65" cy="140" rx="40" ry="46" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3"/>
+    <ellipse cx="65" cy="140" rx="26" ry="32" fill="#0f172a"/>
+    <circle cx="65" cy="140" r="12" fill="#38bdf8" filter="url(#softGlow)"/>
+
+    <!-- Head -->
+    <ellipse cx="65" cy="65" rx="55" ry="48" fill="#f8fafc" stroke="#e2e8f0" stroke-width="3"/>
+    <!-- Visor -->
+    <rect x="22" y="42" width="86" height="42" rx="21" fill="#091426"/>
+    <!-- Glowing Visor Eyes (Green smile curves) -->
+    <path d="M36 62 Q45 52 54 62" stroke="#4ade80" stroke-width="5" stroke-linecap="round" fill="none" filter="url(#softGlow)"/>
+    <path d="M76 62 Q85 52 94 62" stroke="#4ade80" stroke-width="5" stroke-linecap="round" fill="none" filter="url(#softGlow)"/>
+    <!-- Antennas -->
+    <line x1="38" y1="20" x2="28" y2="2" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="28" cy="2" r="5" fill="#4ade80"/>
+    <line x1="92" y1="20" x2="102" y2="2" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="102" cy="2" r="5" fill="#4ade80"/>
+
+    <!-- Hands & Tablet with House Logo -->
+    <rect x="-35" y="110" width="75" height="52" rx="6" fill="#0b172a" stroke="#38bdf8" stroke-width="2"/>
+    <!-- House icon on tablet -->
+    <path d="M0 125 L12 135 V150 H-12 V135 Z" fill="none" stroke="#38bdf8" stroke-width="2"/>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- 8. TABLE ITEMS: BOOKS, MUG, DESK PLAQUE, ROBOT CAR                       -->
+  <!-- ========================================================================= -->
+  <!-- Left: Black Steaming Coffee Mug with Saung Digital Logo -->
+  <g transform="translate(130, 620)">
+    <rect x="0" y="0" width="46" height="54" rx="8" fill="#090d16" stroke="#334155" stroke-width="2"/>
+    <!-- Handle -->
+    <path d="M46 10 C62 10, 62 44, 46 44" fill="none" stroke="#334155" stroke-width="4"/>
+    <!-- Saung Digital Logo on Mug -->
+    <path d="M23 18 L32 25 V36 H14 V25 Z" fill="none" stroke="#38bdf8" stroke-width="1.8"/>
+    <text x="23" y="44" fill="#4ade80" font-size="7" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif">SAUNG</text>
+    <!-- Steam Swirls -->
+    <path d="M16 -8 Q20 -18 16 -26" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5"/>
+    <path d="M26 -6 Q30 -16 26 -24" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+  </g>
+
+  <!-- Center Table Plaque: "THINK CODE CREATE IMPACT" -->
+  <g transform="translate(580, 580)">
+    <rect x="0" y="0" width="120" height="75" rx="6" fill="#1c1917" stroke="#b45309" stroke-width="3" filter="url(#softGlow)"/>
+    <rect x="4" y="4" width="112" height="67" rx="4" fill="#0c0a09"/>
+    <text x="60" y="24" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" letter-spacing="1">THINK</text>
+    <text x="60" y="40" fill="#4ade80" font-size="12" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" letter-spacing="1">CODE</text>
+    <text x="60" y="56" fill="#facc15" font-size="12" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" letter-spacing="1">CREATE</text>
+    <text x="60" y="70" fill="#ffffff" font-size="11" font-weight="950" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" letter-spacing="2">IMPACT</text>
+  </g>
+
+  <!-- Books Stack: Android, Kotlin, AI, IoT -->
+  <g transform="translate(730, 600)">
+    <!-- Book 4: IoT & Robotics (Bottom) -->
+    <rect x="0" y="48" width="220" height="20" rx="3" fill="#0a192f" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="110" y="62" fill="#7dd3fc" font-size="9" font-weight="800" text-anchor="middle" font-family="monospace">IOT &amp; ROBOTICS</text>
+
+    <!-- Book 3: AI Machine Learning -->
+    <rect x="6" y="32" width="210" height="19" rx="3" fill="#062817" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="110" y="45" fill="#86efac" font-size="9" font-weight="800" text-anchor="middle" font-family="monospace">AI MACHINE LEARNING</text>
+
+    <!-- Book 2: Kotlin & Java -->
+    <rect x="12" y="16" width="200" height="19" rx="3" fill="#2d1604" stroke="#d97706" stroke-width="1.5"/>
+    <text x="110" y="29" fill="#fde68a" font-size="9" font-weight="800" text-anchor="middle" font-family="monospace">KOTLIN &amp; JAVA</text>
+
+    <!-- Book 1: Android Development (Top) -->
+    <rect x="18" y="0" width="190" height="19" rx="3" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="110" y="13" fill="#38bdf8" font-size="9" font-weight="800" text-anchor="middle" font-family="monospace">ANDROID DEVELOPMENT</text>
+  </g>
+
+  <!-- Right: Futuristic Robot Car Rover with glowing wheels -->
+  <g transform="translate(1040, 610)">
+    <!-- Rover Body -->
+    <rect x="15" y="20" width="60" height="35" rx="8" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+    <rect x="25" y="8" width="40" height="22" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+    <!-- Glowing camera eye -->
+    <circle cx="38" cy="19" r="4" fill="#38bdf8" filter="url(#softGlow)"/>
+    <circle cx="52" cy="19" r="4" fill="#38bdf8" filter="url(#softGlow)"/>
+    <!-- Glowing Cyan Wheels -->
+    <circle cx="10" cy="55" r="14" fill="#091322" stroke="#38bdf8" stroke-width="3" filter="url(#softGlow)"/>
+    <circle cx="10" cy="55" r="6" fill="#38bdf8"/>
+    <circle cx="80" cy="55" r="14" fill="#091322" stroke="#38bdf8" stroke-width="3" filter="url(#softGlow)"/>
+    <circle cx="80" cy="55" r="6" fill="#38bdf8"/>
+  </g>
+</svg>
