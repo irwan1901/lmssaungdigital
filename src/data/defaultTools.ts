@@ -1,5 +1,9 @@
 import { ToolItem } from '../types';
 
+const defaultUrl =
+  (typeof import.meta !== 'undefined' && (import.meta.env.VITE_GAS_API_URL as string)) ||
+  'https://script.google.com/macros/s/AKfycbwOfuFCKuCUrBC34EJmCkw7ZlbwHcCkqhbgQXjQ4Gk9t8vW8KfQpGbsPKMq3hU7WzAW/exec';
+
 export const DEFAULT_TOOLS: ToolItem[] = [
   {
     id: 'tool-v1',
@@ -11,6 +15,7 @@ export const DEFAULT_TOOLS: ToolItem[] = [
       'Membantu Anda merancang, merencanakan, dan membangun aplikasi Google Apps Script (GAS) berkualitas production-ready.',
     date: '20 Sep 2026',
     category: 'Google Apps Script',
+    toolUrl: defaultUrl,
   },
   {
     id: 'tool-v2',
@@ -21,6 +26,7 @@ export const DEFAULT_TOOLS: ToolItem[] = [
     description: 'Buka Tool untuk mulai menggunakan fitur yang tersedia.',
     date: '20 Sep 2026',
     category: 'Neon Studio',
+    toolUrl: defaultUrl,
   },
   {
     id: 'tool-v3',
@@ -32,6 +38,7 @@ export const DEFAULT_TOOLS: ToolItem[] = [
     date: '21 Sep 2026',
     requiresAdminAccess: true,
     category: 'Enterprise API',
+    toolUrl: defaultUrl,
   },
   {
     id: 'tool-poster',
@@ -43,6 +50,7 @@ export const DEFAULT_TOOLS: ToolItem[] = [
       'Generator template desain grafis, banner promo, dan poster pemasaran produk UMKM berbasis kecerdasan buatan.',
     date: '22 Sep 2026',
     category: 'Desain Grafis AI',
+    toolUrl: defaultUrl,
   },
   {
     id: 'tool-android',
@@ -54,6 +62,7 @@ export const DEFAULT_TOOLS: ToolItem[] = [
       'Asisten arsitektur Kotlin, Jetpack Compose UI, dan Clean Architecture MVVM untuk aplikasi Android modern.',
     date: '23 Sep 2026',
     category: 'Mobile Android',
+    toolUrl: defaultUrl,
   },
   {
     id: 'tool-suite',
@@ -65,5 +74,6 @@ export const DEFAULT_TOOLS: ToolItem[] = [
       'Studio interaktif pengembang kode backend Google Apps Script, uji query spreadsheet, dan generator REST API.',
     date: '24 Sep 2026',
     category: 'Developer Utility',
+    toolUrl: defaultUrl,
   },
 ];

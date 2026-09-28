@@ -377,6 +377,28 @@ export const AdminToolsManager: React.FC<AdminToolsManagerProps> = ({
                   {tool.description}
                 </p>
 
+                {/* Tool URL indicator */}
+                {tool.toolUrl ? (
+                  <div className="flex items-center justify-between gap-1 text-[11px] text-sky-300 bg-sky-950/60 px-2.5 py-1.5 rounded-xl border border-sky-800/40">
+                    <div className="flex items-center gap-1.5 overflow-hidden">
+                      <ExternalLink className="w-3 h-3 text-sky-400 shrink-0" />
+                      <span className="truncate font-mono">{tool.toolUrl}</span>
+                    </div>
+                    <a
+                      href={tool.toolUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] text-sky-400 hover:text-white underline shrink-0 cursor-pointer"
+                    >
+                      Buka
+                    </a>
+                  </div>
+                ) : (
+                  <div className="text-[10px] text-slate-500 italic">
+                    Belum ada URL eksternal (menggunakan modal bawaan)
+                  </div>
+                )}
+
                 <div className="pt-1 flex items-center justify-between text-[11px] text-slate-500">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
@@ -642,17 +664,32 @@ export const AdminToolsManager: React.FC<AdminToolsManagerProps> = ({
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-300">
-                  Tautan Eksternal / URL Aplikasi (Opsional)
-                </label>
+              <div className="space-y-1.5 p-3 rounded-xl bg-[#050c18] border border-sky-900/60">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-bold text-slate-200 flex items-center gap-1.5">
+                    <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
+                    <span>URL Target Tool (Langsung terbuka saat Member klik &quot;Buka Tool&quot;)</span>
+                  </label>
+                  {(import.meta.env.VITE_GAS_API_URL as string) && (
+                    <button
+                      type="button"
+                      onClick={() => setFormToolUrl((import.meta.env.VITE_GAS_API_URL as string))}
+                      className="text-[10px] text-sky-400 hover:text-sky-300 font-semibold underline cursor-pointer"
+                    >
+                      Gunakan VITE_GAS_API_URL
+                    </button>
+                  )}
+                </div>
                 <input
                   type="url"
                   value={formToolUrl}
                   onChange={(e) => setFormToolUrl(e.target.value)}
-                  placeholder="https://..."
-                  className="w-full px-3 py-2 bg-[#050c18] border border-sky-800/60 rounded-xl text-xs text-white focus:outline-none focus:border-pink-400 font-mono"
+                  placeholder="https://script.google.com/... atau https://..."
+                  className="w-full px-3 py-2 bg-[#030812] border border-sky-800/80 rounded-xl text-xs text-white focus:outline-none focus:border-pink-400 font-mono"
                 />
+                <p className="text-[10px] text-slate-400 leading-normal">
+                  Saat member mengklik tombol <strong>&quot;↗ Buka Tool&quot;</strong> di portal, browser akan langsung membuka URL ini di tab baru.
+                </p>
               </div>
 
               {/* Checkbox Admin Access */}

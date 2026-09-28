@@ -293,7 +293,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     if (!file) return;
 
     if (file.size > 15 * 1024 * 1024) {
-      alert('Ukuran berkas gambar maksimal 15 MB.');
+      showToast?.('error', 'Ukuran berkas gambar maksimal 15 MB.');
       return;
     }
 

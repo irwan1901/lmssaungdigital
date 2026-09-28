@@ -15,28 +15,29 @@ import {
   Palette,
   Terminal,
 } from 'lucide-react';
-import { generateAppsScriptCode } from '../services/googleSheetsSync';
-
-export interface ToolItem {
-  id: string;
-  badge: string;
-  tag: string;
-  title: string;
-  description: string;
-  date: string;
-  versionBadge: string;
-  requiresAdminAccess?: boolean;
-}
+import { generateAppsScriptCode, loadSyncConfig } from '../services/googleSheetsSync';
+import { ToolItem } from '../types';
 
 interface ToolViewerModalProps {
   tool: ToolItem;
   onClose: () => void;
 }
 
+const formatUrl = (url?: string): string => {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
+};
+
 export const ToolViewerModal: React.FC<ToolViewerModalProps> = ({ tool, onClose }) => {
   // Tabs inside tool viewer
   const [activeTab, setActiveTab] = useState<'app' | 'guide'>('app');
   const [copied, setCopied] = useState(false);
+  const [hasRequestedAccess, setHasRequestedAccess] = useState(false);
 
   // States for V1 Apps Script
   const [sheetName, setSheetName] = useState('DataSiswa_2026');
@@ -51,6 +52,13 @@ export const ToolViewerModal: React.FC<ToolViewerModalProps> = ({ tool, onClose 
   const [umkmBrand, setUmkmBrand] = useState('Kopi Nusantara');
   const [umkmPromo, setUmkmPromo] = useState('Diskon 50% Semua Menu');
   const [umkmContact, setUmkmContact] = useState('WhatsApp: 0812-3456-7890');
+
+  const adminUploadedUrl =
+    (typeof window !== 'undefined' ? loadSyncConfig().appsScriptUrl : '') ||
+    (import.meta.env.VITE_GAS_API_URL as string) ||
+    'https://script.google.com/macros/s/AKfycbwOfuFCKuCUrBC34EJmCkw7ZlbwHcCkqhbgQXjQ4Gk9t8vW8KfQpGbsPKMq3hU7WzAW/exec';
+
+  const directUrl = formatUrl(tool.toolUrl || adminUploadedUrl);
 
   // Generated code for V1
   const generatedCode = `/**
@@ -134,6 +142,17 @@ function initSheet(ss) {
           </div>
 
           <div className="flex items-center gap-2">
+            {directUrl && (
+              <a
+                href={directUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3.5 py-1.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold shadow-md shadow-sky-600/30 flex items-center gap-1.5 transition no-underline"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span>Buka Tool Asli</span>
+              </a>
+            )}
             <button
               onClick={onClose}
               className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
@@ -160,12 +179,19 @@ function initSheet(ss) {
                 </span>
               </p>
               <div className="pt-2">
-                <button
-                  onClick={() => alert('Permintaan akses telah dikirimkan ke Admin Saung Digital!')}
-                  className="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-sky-500/25 transition cursor-pointer"
-                >
-                  Ajukan Akses ke Admin
-                </button>
+                {hasRequestedAccess ? (
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-950 border border-emerald-500/40 text-emerald-300 text-xs font-semibold">
+                    <Check className="w-4 h-4 text-emerald-400" />
+                    <span>Permintaan akses telah terkirim ke Admin Saung Digital!</span>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setHasRequestedAccess(true)}
+                    className="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-sky-500/25 transition cursor-pointer"
+                  >
+                    Ajukan Akses ke Admin
+                  </button>
+                )}
               </div>
             </div>
           ) : tool.id === 'tool-v1' ? (

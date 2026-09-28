@@ -560,7 +560,20 @@ export function loadTools(): ToolItem[] {
     }
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed) || parsed.length === 0) return DEFAULT_TOOLS;
-    return deduplicateTools(parsed);
+    const defaultUrl =
+      (import.meta.env.VITE_GAS_API_URL as string) ||
+      'https://script.google.com/macros/s/AKfycbwOfuFCKuCUrBC34EJmCkw7ZlbwHcCkqhbgQXjQ4Gk9t8vW8KfQpGbsPKMq3hU7WzAW/exec';
+    const merged = parsed.map((item: ToolItem) => {
+      const match = DEFAULT_TOOLS.find((d) => d.id === item.id);
+      if (match && !item.toolUrl && match.toolUrl) {
+        return { ...item, toolUrl: match.toolUrl };
+      }
+      if (!item.toolUrl) {
+        return { ...item, toolUrl: defaultUrl };
+      }
+      return item;
+    });
+    return deduplicateTools(merged);
   } catch {
     return DEFAULT_TOOLS;
   }
