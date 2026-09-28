@@ -79,36 +79,37 @@ export const AdminPromptManager: React.FC<AdminPromptManagerProps> = ({
   const [configBadgeText, setConfigBadgeText] = useState(
     promptConfig?.badgeText || 'SAUNG DIGITAL UI PROMPT LIBRARY'
   );
-  const [configCategories, setConfigCategories] = useState<string[]>(
-    promptConfig?.categories && promptConfig.categories.length > 0
-      ? promptConfig.categories
-      : [
-          'INTERACTIVE BACKGROUND',
-          'HERO BANNER & 3D',
-          'NEON GLASSMORPHISM',
-          'CARDS & SPOTLIGHT',
-          'NAVIGATION & MENU',
-          'DATA VISUALIZATION',
-          'BUTTONS & MICRO-INTERACTIONS',
-          'UI/UX & Frontend',
-          'ANDROID JETPACK COMPOSE',
-          'Android & Kotlin',
-          'GOOGLE APPS SCRIPT API',
-          'Fullstack & Backend',
-          'IOT & ESP32 ROBOTICS',
-          'IoT & Robotics',
-          'AI & SYSTEM PROMPT',
-          'AI & System Prompt',
-          'SEMUA KATEGORI',
-        ]
-  );
+  const [configCategories, setConfigCategories] = useState<string[]>(() => {
+    const raw =
+      promptConfig?.categories && promptConfig.categories.length > 0
+        ? promptConfig.categories
+        : [
+            'SEMUA KATEGORI',
+            'INTERACTIVE BACKGROUND',
+            'HERO BANNER & 3D',
+            'NEON GLASSMORPHISM',
+            'CARDS & SPOTLIGHT',
+            'NAVIGATION & MENU',
+            'DATA VISUALIZATION',
+            'BUTTONS & MICRO-INTERACTIONS',
+            'UI/UX & Frontend',
+            'ANDROID JETPACK COMPOSE',
+            'Android & Kotlin',
+            'GOOGLE APPS SCRIPT API',
+            'Fullstack & Backend',
+            'IOT & ESP32 ROBOTICS',
+            'IoT & Robotics',
+            'AI & SYSTEM PROMPT',
+          ];
+    const withoutAll = raw.filter((c) => c.trim().toUpperCase() !== 'SEMUA KATEGORI');
+    return ['SEMUA KATEGORI', ...withoutAll];
+  });
   const [newCatInput, setNewCatInput] = useState('');
 
-  // Categories list for filter & select
+  // Categories list for filter & select - SEMUA KATEGORI always at the top
   const availableCategories = useMemo(() => {
-    const list = [...configCategories];
-    if (!list.includes('SEMUA KATEGORI')) list.push('SEMUA KATEGORI');
-    return list;
+    const withoutAll = configCategories.filter((c) => c.trim().toUpperCase() !== 'SEMUA KATEGORI');
+    return ['SEMUA KATEGORI', ...withoutAll];
   }, [configCategories]);
 
   // Filtered prompts
@@ -144,7 +145,9 @@ export const AdminPromptManager: React.FC<AdminPromptManagerProps> = ({
     const nextNumber = `#${String(prompts.length + 21).padStart(3, '0')}`;
     setFormNumberTag(nextNumber);
     setFormTitle('');
-    setFormCategory(configCategories[0] || 'INTERACTIVE BACKGROUND');
+    const firstRealCategory =
+      configCategories.find((c) => c.toUpperCase() !== 'SEMUA KATEGORI') || 'INTERACTIVE BACKGROUND';
+    setFormCategory(firstRealCategory);
     setFormTargetRole('Creative Developer');
     setFormDescription('');
     setFormPromptText('');
@@ -251,11 +254,12 @@ export const AdminPromptManager: React.FC<AdminPromptManagerProps> = ({
 
   // Save Config
   const handleSaveConfig = () => {
+    const withoutAll = configCategories.filter((c) => c.trim().toUpperCase() !== 'SEMUA KATEGORI');
     const updated: PromptLibraryConfig = {
       headerTitle: configHeaderTitle.trim() || 'Prompt UI & Web Interaktif',
       headerSubtitle: configHeaderSubtitle.trim(),
       badgeText: configBadgeText.trim() || 'SAUNG DIGITAL UI PROMPT LIBRARY',
-      categories: configCategories,
+      categories: ['SEMUA KATEGORI', ...withoutAll],
     };
     onUpdateConfig(updated);
     setIsConfigOpen(false);
@@ -563,11 +567,13 @@ export const AdminPromptManager: React.FC<AdminPromptManagerProps> = ({
                     onChange={(e) => setFormCategory(e.target.value)}
                     className="w-full px-3 py-2 bg-[#050c18] border border-sky-800/60 rounded-xl text-xs text-white font-medium focus:outline-none focus:border-sky-400 cursor-pointer"
                   >
-                    {configCategories.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
+                    {configCategories
+                      .filter((c) => c.trim().toUpperCase() !== 'SEMUA KATEGORI')
+                      .map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
@@ -817,16 +823,25 @@ export const AdminPromptManager: React.FC<AdminPromptManagerProps> = ({
                   {configCategories.map((cat) => (
                     <div
                       key={cat}
-                      className="flex items-center gap-1.5 px-2.5 py-1 bg-sky-950/80 border border-sky-800/40 text-sky-200 text-xs rounded-lg font-mono font-medium"
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-mono text-xs font-medium border ${
+                        cat === 'SEMUA KATEGORI'
+                          ? 'bg-amber-400/15 border-amber-400/40 text-amber-300 font-bold'
+                          : 'bg-sky-950/80 border-sky-800/40 text-sky-200'
+                      }`}
                     >
                       <span>{cat}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveCategory(cat)}
-                        className="text-slate-400 hover:text-rose-400 p-0.5 rounded cursor-pointer"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
+                      {cat === 'SEMUA KATEGORI' ? (
+                        <span className="text-[9px] text-amber-400/80 uppercase font-sans">(Atas)</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCategory(cat)}
+                          className="text-slate-400 hover:text-rose-400 p-0.5 rounded cursor-pointer"
+                          title="Hapus Kategori"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>

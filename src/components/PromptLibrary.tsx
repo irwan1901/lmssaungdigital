@@ -25,6 +25,7 @@ interface PromptLibraryProps {
 }
 
 const CATEGORIES_LIST = [
+  'SEMUA KATEGORI',
   'INTERACTIVE BACKGROUND',
   'HERO BANNER & 3D',
   'NEON GLASSMORPHISM',
@@ -40,8 +41,6 @@ const CATEGORIES_LIST = [
   'IOT & ESP32 ROBOTICS',
   'IoT & Robotics',
   'AI & SYSTEM PROMPT',
-  'AI & System Prompt',
-  'SEMUA KATEGORI',
 ];
 
 export const PromptLibrary: React.FC<PromptLibraryProps> = ({
@@ -62,7 +61,12 @@ export const PromptLibrary: React.FC<PromptLibraryProps> = ({
   });
 
   const prompts = externalPrompts && externalPrompts.length > 0 ? externalPrompts : localPrompts;
-  const categoriesList = config?.categories && config.categories.length > 0 ? config.categories : CATEGORIES_LIST;
+  const rawCategories = config?.categories && config.categories.length > 0 ? config.categories : CATEGORIES_LIST;
+  const categoriesList = useMemo(() => {
+    const withoutAll = rawCategories.filter((cat) => cat.trim().toUpperCase() !== 'SEMUA KATEGORI');
+    return ['SEMUA KATEGORI', ...withoutAll];
+  }, [rawCategories]);
+
   const headerTitle = config?.headerTitle || 'Prompt UI & Web Interaktif';
   const headerSubtitle =
     config?.headerSubtitle ||
@@ -78,7 +82,7 @@ export const PromptLibrary: React.FC<PromptLibraryProps> = ({
     }
   });
 
-  const [selectedCategory, setSelectedCategory] = useState<string>('INTERACTIVE BACKGROUND');
+  const [selectedCategory, setSelectedCategory] = useState<string>('SEMUA KATEGORI');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [activePreviewPrompt, setActivePreviewPrompt] = useState<PromptItem | null>(null);

@@ -29,6 +29,7 @@ export const DEFAULT_PROMPT_LIBRARY_CONFIG: PromptLibraryConfig = {
     'Koleksi prompt engineering terkurasi untuk mempercepat workflow pengembangan, pembuatan kode interaktif, dan arsitektur aplikasi.',
   badgeText: 'Koleksi Terverifikasi AI Studio',
   categories: [
+    'SEMUA KATEGORI',
     'INTERACTIVE BACKGROUND',
     'HERO BANNER & 3D',
     'NEON GLASSMORPHISM',
@@ -44,8 +45,6 @@ export const DEFAULT_PROMPT_LIBRARY_CONFIG: PromptLibraryConfig = {
     'IOT & ESP32 ROBOTICS',
     'IoT & Robotics',
     'AI & SYSTEM PROMPT',
-    'AI & System Prompt',
-    'SEMUA KATEGORI',
   ],
 };
 
@@ -491,6 +490,13 @@ export function loadPlatformSettings(): PlatformSettings {
     const raw = localStorage.getItem(STORAGE_KEY_SETTINGS) || localStorage.getItem('samadigi_settings_v1');
     if (!raw) return DEFAULT_PLATFORM_SETTINGS;
     const parsed = JSON.parse(raw);
+    const loadedPromptConfig = parsed.promptLibraryConfig;
+    if (loadedPromptConfig?.categories && Array.isArray(loadedPromptConfig.categories)) {
+      const withoutAll = loadedPromptConfig.categories.filter(
+        (c: string) => typeof c === 'string' && c.trim().toUpperCase() !== 'SEMUA KATEGORI'
+      );
+      loadedPromptConfig.categories = ['SEMUA KATEGORI', ...withoutAll];
+    }
     return {
       ...DEFAULT_PLATFORM_SETTINGS,
       ...parsed,
