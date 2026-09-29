@@ -743,12 +743,15 @@ export async function testAppsScriptConnection(url: string): Promise<{ success: 
 }
 
 /**
- * Fetch latest materials & members from Google Sheet via Apps Script
+ * Fetch latest materials, members, prompts, tools, & settings from Google Sheet via Apps Script
  */
 export async function fetchFromGoogleSheet(url: string): Promise<{
   success: boolean;
   materials?: LearningMaterial[];
   members?: MemberUser[];
+  prompts?: PromptItem[];
+  tools?: ToolItem[];
+  settings?: PlatformSettings;
   message: string;
 }> {
   if (!url || !url.trim().startsWith('http')) {
@@ -773,11 +776,26 @@ export async function fetchFromGoogleSheet(url: string): Promise<{
     if (data.status === 'success' || data.materials) {
       const sanitizedMaterials = Array.isArray(data.materials) ? deduplicateMaterials(data.materials) : undefined;
       const sanitizedMembers = Array.isArray(data.members) ? deduplicateMembers(data.members) : undefined;
+      const sanitizedPrompts = Array.isArray(data.prompts) ? deduplicatePrompts(data.prompts) : undefined;
+      const sanitizedTools = Array.isArray(data.tools) ? deduplicateTools(data.tools) : undefined;
+      const parsedSettings = data.settings && typeof data.settings === 'object' ? (data.settings as PlatformSettings) : undefined;
+
+      const summaryParts = [
+        sanitizedMaterials ? `${sanitizedMaterials.length} materi` : '',
+        sanitizedMembers ? `${sanitizedMembers.length} member` : '',
+        sanitizedPrompts ? `${sanitizedPrompts.length} prompts` : '',
+        sanitizedTools ? `${sanitizedTools.length} tools` : '',
+        parsedSettings ? 'pengaturan' : '',
+      ].filter(Boolean);
+
       return {
         success: true,
         materials: sanitizedMaterials,
         members: sanitizedMembers,
-        message: `Sinkronisasi berhasil! Memuat ${sanitizedMaterials?.length || 0} materi.`
+        prompts: sanitizedPrompts,
+        tools: sanitizedTools,
+        settings: parsedSettings,
+        message: `Sinkronisasi Google Sheets berhasil! (${summaryParts.join(', ') || 'data termuat'}).`
       };
     } else {
       return {
@@ -794,12 +812,15 @@ export async function fetchFromGoogleSheet(url: string): Promise<{
 }
 
 /**
- * Push current local materials & members to Google Sheet
+ * Push current local materials, members, prompts, tools, & settings to Google Sheet
  */
 export async function pushToGoogleSheet(
   url: string,
   materials: LearningMaterial[],
-  members: MemberUser[]
+  members: MemberUser[],
+  prompts?: PromptItem[],
+  tools?: ToolItem[],
+  settings?: PlatformSettings
 ): Promise<{ success: boolean; message: string }> {
   if (!url || !url.trim().startsWith('http')) {
     return {
@@ -814,6 +835,9 @@ export async function pushToGoogleSheet(
       action: 'syncAll',
       materials,
       members,
+      prompts: prompts || [],
+      tools: tools || [],
+      settings: settings || null,
       timestamp: new Date().toISOString()
     };
 
@@ -832,7 +856,7 @@ export async function pushToGoogleSheet(
     const result = await response.json();
     return {
       success: true,
-      message: result.message || 'Semua materi & data member berhasil disimpan ke Google Sheets!'
+      message: result.message || 'Semua database (Materi, Member, Prompts, Tools, Pengaturan) berhasil disimpan ke Google Sheets!'
     };
   } catch (err: any) {
     return {
@@ -844,30 +868,41 @@ export async function pushToGoogleSheet(
 
 /**
  * Generates ready-to-paste Google Apps Script code (Code.gs)
+ * Menampung 5 Database: Materi, Members, Prompts, Tools, dan Pengaturan
  */
 export function generateAppsScriptCode(): string {
   return `/**
  * =========================================================================
  * SAUNG DIGITAL - LEARNING CENTER DATABASE BACKEND (GOOGLE APPS SCRIPT)
  * =========================================================================
- * Petunjuk Instalasi:
- * 1. Buat Google Sheet baru (misal: "Saung Digital Database").
+ * Terdiri dari 5 Database Sheet Otomatis:
+ * 1. "Materi"     : Modul pembelajaran, tutorial video, file HTML, dan aset
+ * 2. "Members"    : Akun pengguna, hak akses role, bookmark & progress
+ * 3. "Prompts"    : UI Prompt Library (24+ koleksi prompt kreatif & live visual)
+ * 4. "Tools"      : UI Member Tools (alat produktivitas, AI, & utilitas developer)
+ * 5. "Pengaturan" : Konfigurasi portal, logo kustom, banner, warna & pengumuman
+ * =========================================================================
+ * Petunjuk Pemasangan Cepat:
+ * 1. Buat Google Sheet baru (buka: sheets.new). Beri nama misal "Saung Digital Database".
  * 2. Klik menu "Ekstensi" (Extensions) > "Apps Script".
- * 3. Hapus kode bawaan, lalu tempel SELURUH KODE di bawah ini ke file Code.gs.
+ * 3. Hapus seluruh isi kode bawaan editor, lalu tempel SELURUH KODE di bawah ini.
  * 4. Simpan proyek (Ctrl + S).
- * 5. Klik tombol biru "Deploy" (Terapkan) > "New deployment" (Penerapan baru).
- * 6. Pilih tipe: "Web app" (Aplikasi Web).
- * 7. Konfigurasi:
- *    - Description: "Saung Digital Sync API v1"
- *    - Execute as: "Me" (Saya)
- *    - Who has access: "Anyone" (Siapa saja)  <-- SANGAT PENTING!
- * 8. Klik "Deploy", beri izin akses (Authorize access), lalu salin "Web app URL".
- * 9. Tempel URL tersebut ke menu Admin > Integrasi Google Sheets di website Saung Digital.
+ * 5. Klik tombol biru "Deploy" (Terapkan) di kanan atas > "New deployment" (Penerapan baru).
+ * 6. Klik ikon roda gigi > pilih tipe: "Web app" (Aplikasi Web).
+ * 7. Konfigurasikan:
+ *    - Description: "Saung Digital Sync API v2"
+ *    - Execute as: "Me" (Saya / email Anda)
+ *    - Who has access: "Anyone" (Siapa saja)  <-- WAJIB PILIH "ANYONE"!
+ * 8. Klik "Deploy", izinkan hak akses (Authorize access > Advanced > Go to ...).
+ * 9. Salin "Web app URL" (berakhiran /exec) lalu tempel ke menu Admin > Sinkronisasi Google Sheets.
  * =========================================================================
  */
 
 var SHEET_NAME_MATERIALS = 'Materi';
 var SHEET_NAME_MEMBERS = 'Members';
+var SHEET_NAME_PROMPTS = 'Prompts';
+var SHEET_NAME_TOOLS = 'Tools';
+var SHEET_NAME_SETTINGS = 'Pengaturan';
 
 function doGet(e) {
   var action = (e && e.parameter && e.parameter.action) ? e.parameter.action : 'ping';
@@ -880,15 +915,48 @@ function doGet(e) {
     });
   }
   
-  if (action === 'getAll' || action === 'getMaterials') {
+  if (action === 'getAll' || action === 'syncAll' || action === 'getMaterials') {
     initSheetsIfNeeded();
     var materials = getMaterialsFromSheet();
     var members = getMembersFromSheet();
+    var prompts = getPromptsFromSheet();
+    var tools = getToolsFromSheet();
+    var settings = getSettingsFromSheet();
     
     return createJsonResponse({
       status: 'success',
       materials: materials,
       members: members,
+      prompts: prompts,
+      tools: tools,
+      settings: settings,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  if (action === 'getPrompts') {
+    initSheetsIfNeeded();
+    return createJsonResponse({
+      status: 'success',
+      prompts: getPromptsFromSheet(),
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  if (action === 'getTools') {
+    initSheetsIfNeeded();
+    return createJsonResponse({
+      status: 'success',
+      tools: getToolsFromSheet(),
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  if (action === 'getSettings') {
+    initSheetsIfNeeded();
+    return createJsonResponse({
+      status: 'success',
+      settings: getSettingsFromSheet(),
       timestamp: new Date().toISOString()
     });
   }
@@ -905,15 +973,57 @@ function doPost(e) {
     var postData = JSON.parse(e.postData.contents);
     var action = postData.action || 'syncAll';
     
-    if (action === 'syncAll' && postData.materials) {
-      saveMaterialsToSheet(postData.materials);
+    if (action === 'syncAll') {
+      var summary = [];
+      if (postData.materials) {
+        saveMaterialsToSheet(postData.materials);
+        summary.push(postData.materials.length + ' Materi');
+      }
       if (postData.members) {
         saveMembersToSheet(postData.members);
+        summary.push(postData.members.length + ' Member');
       }
+      if (postData.prompts) {
+        savePromptsToSheet(postData.prompts);
+        summary.push(postData.prompts.length + ' Prompts');
+      }
+      if (postData.tools) {
+        saveToolsToSheet(postData.tools);
+        summary.push(postData.tools.length + ' Tools');
+      }
+      if (postData.settings) {
+        saveSettingsToSheet(postData.settings);
+        summary.push('Pengaturan');
+      }
+      
       return createJsonResponse({
         status: 'success',
-        message: 'Berhasil menyinkronkan ' + postData.materials.length + ' materi ke Google Sheets!',
-        count: postData.materials.length
+        message: 'Berhasil menyinkronkan seluruh database (' + summary.join(', ') + ') ke Google Sheets!',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    if (action === 'savePrompts' && postData.prompts) {
+      savePromptsToSheet(postData.prompts);
+      return createJsonResponse({
+        status: 'success',
+        message: 'Berhasil menyimpan ' + postData.prompts.length + ' prompt ke Google Sheets.'
+      });
+    }
+
+    if (action === 'saveTools' && postData.tools) {
+      saveToolsToSheet(postData.tools);
+      return createJsonResponse({
+        status: 'success',
+        message: 'Berhasil menyimpan ' + postData.tools.length + ' tool ke Google Sheets.'
+      });
+    }
+
+    if (action === 'saveSettings' && postData.settings) {
+      saveSettingsToSheet(postData.settings);
+      return createJsonResponse({
+        status: 'success',
+        message: 'Pengaturan portal berhasil disimpan ke Google Sheets.'
       });
     }
     
@@ -927,7 +1037,7 @@ function doPost(e) {
     
     return createJsonResponse({
       status: 'error',
-      message: 'Aksi post tidak valid.'
+      message: 'Aksi POST tidak valid.'
     });
   } catch (err) {
     return createJsonResponse({
@@ -937,31 +1047,66 @@ function doPost(e) {
   }
 }
 
-// Inisialisasi sheet dan header jika belum ada
+// Inisialisasi kelima sheet dan header tabel jika belum ada
 function initSheetsIfNeeded() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   
-  // Sheet Materi
+  // 1. Sheet Materi
   var matSheet = ss.getSheetByName(SHEET_NAME_MATERIALS);
   if (!matSheet) {
     matSheet = ss.insertSheet(SHEET_NAME_MATERIALS);
     matSheet.appendRow([
       'ID', 'Judul', 'Kategori', 'Tipe', 'Deskripsi', 'VideoURL', 
-      'YouTubeID', 'Konten', 'HTMLCode', 'AttachmentURL', 'Tags', 
-      'Durasi', 'Level', 'Penulis', 'Status', 'Views', 'UpdatedAt'
+      'YouTubeID', 'Konten', 'HTMLCode', 'AttachmentURL', 'AttachmentName', 'Tags', 
+      'Durasi', 'Level', 'Penulis', 'Status', 'Views', 'Order', 'UpdatedAt'
     ]);
-    matSheet.getRange(1, 1, 1, 17).setFontWeight('bold').setBackground('#0e192f').setFontColor('#38bdf8');
+    matSheet.getRange(1, 1, 1, 19).setFontWeight('bold').setBackground('#0e192f').setFontColor('#38bdf8');
+    matSheet.setFrozenRows(1);
   }
   
-  // Sheet Members
+  // 2. Sheet Members
   var memSheet = ss.getSheetByName(SHEET_NAME_MEMBERS);
   if (!memSheet) {
     memSheet = ss.insertSheet(SHEET_NAME_MEMBERS);
-    memSheet.appendRow(['ID', 'Nama', 'Email', 'Role', 'Status', 'SelesaiIDs', 'BookmarkIDs', 'JoinedAt']);
-    memSheet.getRange(1, 1, 1, 8).setFontWeight('bold').setBackground('#0e192f').setFontColor('#facc15');
+    memSheet.appendRow(['ID', 'Nama', 'Email', 'Password', 'Role', 'Status', 'SelesaiIDs', 'BookmarkIDs', 'JoinedAt']);
+    memSheet.getRange(1, 1, 1, 9).setFontWeight('bold').setBackground('#0e192f').setFontColor('#facc15');
+    memSheet.setFrozenRows(1);
+  }
+
+  // 3. Sheet UI Prompts
+  var promptSheet = ss.getSheetByName(SHEET_NAME_PROMPTS);
+  if (!promptSheet) {
+    promptSheet = ss.insertSheet(SHEET_NAME_PROMPTS);
+    promptSheet.appendRow([
+      'ID', 'NomorTag', 'Judul', 'Kategori', 'TargetRole', 'Deskripsi', 
+      'TipePreview', 'Tags', 'VariabelJSON', 'IsCustom', 'PromptText'
+    ]);
+    promptSheet.getRange(1, 1, 1, 11).setFontWeight('bold').setBackground('#0e192f').setFontColor('#c084fc');
+    promptSheet.setFrozenRows(1);
+  }
+
+  // 4. Sheet Member Tools
+  var toolSheet = ss.getSheetByName(SHEET_NAME_TOOLS);
+  if (!toolSheet) {
+    toolSheet = ss.insertSheet(SHEET_NAME_TOOLS);
+    toolSheet.appendRow(['ID', 'Judul', 'Deskripsi', 'URL', 'Kategori', 'IconName', 'IsPopular', 'Urutan']);
+    toolSheet.getRange(1, 1, 1, 8).setFontWeight('bold').setBackground('#0e192f').setFontColor('#34d399');
+    toolSheet.setFrozenRows(1);
+  }
+
+  // 5. Sheet Pengaturan Portal
+  var setSheet = ss.getSheetByName(SHEET_NAME_SETTINGS);
+  if (!setSheet) {
+    setSheet = ss.insertSheet(SHEET_NAME_SETTINGS);
+    setSheet.appendRow(['Kunci (Key)', 'Nilai (Value)', 'Keterangan']);
+    setSheet.getRange(1, 1, 1, 3).setFontWeight('bold').setBackground('#0e192f').setFontColor('#fbbf24');
+    setSheet.setFrozenRows(1);
   }
 }
 
+// ==========================================
+// 1. HANDLER DATABASE: MATERI
+// ==========================================
 function getMaterialsFromSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME_MATERIALS);
@@ -985,14 +1130,15 @@ function getMaterialsFromSheet() {
       content: String(r[7] || ''),
       htmlCode: String(r[8] || ''),
       attachmentUrl: String(r[9] || ''),
-      tags: r[10] ? String(r[10]).split(',').map(function(t){ return t.trim(); }) : [],
-      duration: String(r[11] || ''),
-      level: String(r[12] || 'Semua Level'),
-      author: String(r[13] || 'Saung Digital'),
-      isPublished: String(r[14]).toLowerCase() !== 'draft',
-      views: Number(r[15]) || 0,
-      updatedAt: String(r[16] || new Date().toISOString()),
-      order: i
+      attachmentName: String(r[10] || ''),
+      tags: r[11] ? String(r[11]).split(',').map(function(t){ return t.trim(); }).filter(Boolean) : [],
+      duration: String(r[12] || '15 Menit'),
+      level: String(r[13] || 'Semua Level'),
+      author: String(r[14] || 'Saung Digital'),
+      isPublished: String(r[15]).toLowerCase() !== 'draft',
+      views: Number(r[16]) || 0,
+      order: Number(r[17]) || i,
+      updatedAt: String(r[18] || new Date().toISOString())
     });
   }
   return materials;
@@ -1006,15 +1152,14 @@ function saveMaterialsToSheet(materials) {
     sheet = ss.getSheetByName(SHEET_NAME_MATERIALS);
   }
   
-  // Bersihkan data lama kecuali header
   var lastRow = sheet.getLastRow();
   if (lastRow > 1) {
-    sheet.getRange(2, 1, lastRow - 1, 17).clearContent();
+    sheet.getRange(2, 1, lastRow - 1, 19).clearContent();
   }
   
   if (materials.length === 0) return;
   
-  var rows = materials.map(function(m) {
+  var rows = materials.map(function(m, idx) {
     return [
       m.id || '',
       m.title || '',
@@ -1026,19 +1171,24 @@ function saveMaterialsToSheet(materials) {
       m.content || '',
       m.htmlCode || '',
       m.attachmentUrl || '',
+      m.attachmentName || '',
       (m.tags || []).join(', '),
-      m.duration || '',
+      m.duration || '15 Menit',
       m.level || 'Semua Level',
       m.author || 'Saung Digital',
       m.isPublished ? 'Publish' : 'Draft',
       m.views || 0,
+      m.order || (idx + 1),
       m.updatedAt || new Date().toISOString()
     ];
   });
   
-  sheet.getRange(2, 1, rows.length, 17).setValues(rows);
+  sheet.getRange(2, 1, rows.length, 19).setValues(rows);
 }
 
+// ==========================================
+// 2. HANDLER DATABASE: MEMBERS
+// ==========================================
 function getMembersFromSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME_MEMBERS);
@@ -1055,11 +1205,12 @@ function getMembersFromSheet() {
       id: String(r[0]),
       name: String(r[1] || ''),
       email: String(r[2] || ''),
-      role: String(r[3] || 'member'),
-      status: String(r[4] || 'active'),
-      completedMaterials: r[5] ? String(r[5]).split(',').map(function(s){ return s.trim(); }) : [],
-      bookmarkedMaterials: r[6] ? String(r[6]).split(',').map(function(s){ return s.trim(); }) : [],
-      joinedAt: String(r[7] || new Date().toISOString())
+      password: String(r[3] || 'member123'),
+      role: String(r[4] || 'member'),
+      status: String(r[5] || 'active'),
+      completedMaterials: r[6] ? String(r[6]).split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [],
+      bookmarkedMaterials: r[7] ? String(r[7]).split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [],
+      joinedAt: String(r[8] || new Date().toISOString())
     });
   }
   return members;
@@ -1068,11 +1219,14 @@ function getMembersFromSheet() {
 function saveMembersToSheet(members) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME_MEMBERS);
-  if (!sheet) return;
+  if (!sheet) {
+    initSheetsIfNeeded();
+    sheet = ss.getSheetByName(SHEET_NAME_MEMBERS);
+  }
   
   var lastRow = sheet.getLastRow();
   if (lastRow > 1) {
-    sheet.getRange(2, 1, lastRow - 1, 8).clearContent();
+    sheet.getRange(2, 1, lastRow - 1, 9).clearContent();
   }
   
   if (members.length === 0) return;
@@ -1082,6 +1236,7 @@ function saveMembersToSheet(members) {
       mem.id || '',
       mem.name || '',
       mem.email || '',
+      mem.password || 'member123',
       mem.role || 'member',
       mem.status || 'active',
       (mem.completedMaterials || []).join(', '),
@@ -1090,7 +1245,226 @@ function saveMembersToSheet(members) {
     ];
   });
   
+  sheet.getRange(2, 1, rows.length, 9).setValues(rows);
+}
+
+// ==========================================
+// 3. HANDLER DATABASE: UI PROMPTS
+// ==========================================
+function getPromptsFromSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SHEET_NAME_PROMPTS);
+  if (!sheet) return [];
+  
+  var rows = sheet.getDataRange().getValues();
+  if (rows.length <= 1) return [];
+  
+  var prompts = [];
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (!r[0]) continue;
+    
+    var vars = [];
+    if (r[8]) {
+      try {
+        vars = JSON.parse(String(r[8]));
+      } catch(e) {
+        vars = [];
+      }
+    }
+    
+    prompts.push({
+      id: String(r[0]),
+      numberTag: String(r[1] || ''),
+      title: String(r[2] || ''),
+      category: String(r[3] || 'INTERACTIVE BACKGROUND'),
+      targetRole: String(r[4] || 'Creative Developer'),
+      description: String(r[5] || ''),
+      previewType: String(r[6] || 'matrix'),
+      tags: r[7] ? String(r[7]).split(',').map(function(t){ return t.trim(); }).filter(Boolean) : [],
+      variables: vars,
+      isCustom: String(r[9]).toLowerCase() === 'true',
+      promptText: String(r[10] || '')
+    });
+  }
+  return prompts;
+}
+
+function savePromptsToSheet(prompts) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SHEET_NAME_PROMPTS);
+  if (!sheet) {
+    initSheetsIfNeeded();
+    sheet = ss.getSheetByName(SHEET_NAME_PROMPTS);
+  }
+  
+  var lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    sheet.getRange(2, 1, lastRow - 1, 11).clearContent();
+  }
+  
+  if (prompts.length === 0) return;
+  
+  var rows = prompts.map(function(p) {
+    return [
+      p.id || '',
+      p.numberTag || '',
+      p.title || '',
+      p.category || 'INTERACTIVE BACKGROUND',
+      p.targetRole || 'Creative Developer',
+      p.description || '',
+      p.previewType || 'matrix',
+      (p.tags || []).join(', '),
+      p.variables ? JSON.stringify(p.variables) : '[]',
+      p.isCustom ? true : false,
+      p.promptText || ''
+    ];
+  });
+  
+  sheet.getRange(2, 1, rows.length, 11).setValues(rows);
+}
+
+// ==========================================
+// 4. HANDLER DATABASE: UI MEMBER TOOLS
+// ==========================================
+function getToolsFromSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SHEET_NAME_TOOLS);
+  if (!sheet) return [];
+  
+  var rows = sheet.getDataRange().getValues();
+  if (rows.length <= 1) return [];
+  
+  var tools = [];
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (!r[0]) continue;
+    tools.push({
+      id: String(r[0]),
+      title: String(r[1] || ''),
+      description: String(r[2] || ''),
+      url: String(r[3] || ''),
+      category: String(r[4] || 'General'),
+      iconName: String(r[5] || 'Wrench'),
+      isPopular: String(r[6]).toLowerCase() === 'true',
+      order: Number(r[7]) || i
+    });
+  }
+  return tools;
+}
+
+function saveToolsToSheet(tools) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SHEET_NAME_TOOLS);
+  if (!sheet) {
+    initSheetsIfNeeded();
+    sheet = ss.getSheetByName(SHEET_NAME_TOOLS);
+  }
+  
+  var lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    sheet.getRange(2, 1, lastRow - 1, 8).clearContent();
+  }
+  
+  if (tools.length === 0) return;
+  
+  var rows = tools.map(function(t, idx) {
+    return [
+      t.id || '',
+      t.title || '',
+      t.description || '',
+      t.url || '',
+      t.category || 'General',
+      t.iconName || 'Wrench',
+      t.isPopular ? true : false,
+      t.order || (idx + 1)
+    ];
+  });
+  
   sheet.getRange(2, 1, rows.length, 8).setValues(rows);
+}
+
+// ==========================================
+// 5. HANDLER DATABASE: PENGATURAN PORTAL
+// ==========================================
+function getSettingsFromSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SHEET_NAME_SETTINGS);
+  if (!sheet) return null;
+  
+  var rows = sheet.getDataRange().getValues();
+  if (rows.length <= 1) return null;
+  
+  var map = {};
+  for (var i = 1; i < rows.length; i++) {
+    var key = String(rows[i][0] || '').trim();
+    var val = rows[i][1];
+    if (key) {
+      map[key] = val;
+    }
+  }
+  
+  var promptConf = null;
+  if (map['promptLibraryConfig']) {
+    try {
+      promptConf = JSON.parse(String(map['promptLibraryConfig']));
+    } catch(e) {}
+  }
+  
+  var toolConf = null;
+  if (map['memberToolsConfig']) {
+    try {
+      toolConf = JSON.parse(String(map['memberToolsConfig']));
+    } catch(e) {}
+  }
+  
+  return {
+    platformName: String(map['platformName'] || 'SAUNG DIGITAL'),
+    tagline: String(map['tagline'] || 'Pusat Pembelajaran & Akselerasi Kreatif Digital'),
+    portalDescription: String(map['portalDescription'] || ''),
+    adminContactEmail: String(map['adminContactEmail'] || 'admin@saungdigital.id'),
+    adminPassword: String(map['adminPassword'] || 'admin2026'),
+    allowGuestPreview: String(map['allowGuestPreview']).toLowerCase() === 'true',
+    enableSpotlightGlow: String(map['enableSpotlightGlow']).toLowerCase() !== 'false',
+    accentColor: String(map['accentColor'] || 'emerald'),
+    broadcastMessage: String(map['broadcastMessage'] || ''),
+    isBroadcastActive: String(map['isBroadcastActive']).toLowerCase() === 'true',
+    bannerImageUrl: String(map['bannerImageUrl'] || ''),
+    promptLibraryConfig: promptConf,
+    memberToolsConfig: toolConf
+  };
+}
+
+function saveSettingsToSheet(settings) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SHEET_NAME_SETTINGS);
+  if (!sheet) {
+    initSheetsIfNeeded();
+    sheet = ss.getSheetByName(SHEET_NAME_SETTINGS);
+  }
+  
+  var lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    sheet.getRange(2, 1, lastRow - 1, 3).clearContent();
+  }
+  
+  var rows = [
+    ['platformName', settings.platformName || 'SAUNG DIGITAL', 'Nama resmi portal platform'],
+    ['tagline', settings.tagline || 'Pusat Pembelajaran & Akselerasi Kreatif Digital', 'Slogan / Tagline portal'],
+    ['portalDescription', settings.portalDescription || '', 'Deskripsi lengkap platform'],
+    ['adminContactEmail', settings.adminContactEmail || 'admin@saungdigital.id', 'Email kontak resmi administrator'],
+    ['adminPassword', settings.adminPassword || 'admin2026', 'Password akun Administrator'],
+    ['allowGuestPreview', settings.allowGuestPreview ? 'true' : 'false', 'Izinkan tamu melihat ringkasan materi tanpa login'],
+    ['enableSpotlightGlow', settings.enableSpotlightGlow !== false ? 'true' : 'false', 'Efek pencahayaan kartu spotlight kursor neon'],
+    ['accentColor', settings.accentColor || 'emerald', 'Warna tema aksen (emerald / cyan / amber)'],
+    ['broadcastMessage', settings.broadcastMessage || '', 'Isi teks baris pengumuman berjalan'],
+    ['isBroadcastActive', settings.isBroadcastActive ? 'true' : 'false', 'Status aktifitas bilah pengumuman'],
+    ['bannerImageUrl', settings.bannerImageUrl || '', 'URL gambar logo kustom / banner portal'],
+    ['promptLibraryConfig', settings.promptLibraryConfig ? JSON.stringify(settings.promptLibraryConfig) : '', 'Konfigurasi judul & badge UI Prompt Library (JSON)'],
+    ['memberToolsConfig', settings.memberToolsConfig ? JSON.stringify(settings.memberToolsConfig) : '', 'Konfigurasi judul & badge UI Member Tools (JSON)']
+  ];
+  
+  sheet.getRange(2, 1, rows.length, 3).setValues(rows);
 }
 
 function createJsonResponse(obj) {
@@ -1099,3 +1473,4 @@ function createJsonResponse(obj) {
 }
 `;
 }
+

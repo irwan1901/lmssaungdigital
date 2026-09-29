@@ -442,6 +442,23 @@ export default function App() {
       if (result.members && result.members.length > 0) {
         setMembers(deduplicateMembers(result.members));
       }
+      if (result.prompts && result.prompts.length > 0) {
+        setPrompts(deduplicatePrompts(result.prompts));
+      }
+      if (result.tools && result.tools.length > 0) {
+        setTools(deduplicateTools(result.tools));
+      }
+      if (result.settings) {
+        setPlatformSettings((prev) => {
+          const merged = {
+            ...prev,
+            ...result.settings,
+            bannerImageUrl: result.settings?.bannerImageUrl || prev.bannerImageUrl,
+          };
+          savePlatformSettings(merged);
+          return merged;
+        });
+      }
 
       const timestamp = new Date().toLocaleTimeString('id-ID', {
         hour: '2-digit',
@@ -454,11 +471,17 @@ export default function App() {
         lastError: undefined,
       }));
 
+      const totalItems =
+        (result.materials?.length || 0) +
+        (result.members?.length || 0) +
+        (result.prompts?.length || 0) +
+        (result.tools?.length || 0);
+
       const updatedLogs = addSyncLog({
         type: 'pull',
         status: 'success',
-        message: `Menarik data sukses: ${result.materials?.length || 0} materi dari Google Sheets.`,
-        itemsCount: result.materials?.length,
+        message: `Menarik data sukses: ${result.materials?.length || 0} materi, ${result.members?.length || 0} member, ${result.prompts?.length || 0} prompts, ${result.tools?.length || 0} tools & pengaturan.`,
+        itemsCount: totalItems,
       });
       setSyncLogs(updatedLogs);
       showToast('success', result.message);
@@ -485,7 +508,14 @@ export default function App() {
     }
 
     setIsSyncing(true);
-    const result = await pushToGoogleSheet(syncConfig.appsScriptUrl, materials, members);
+    const result = await pushToGoogleSheet(
+      syncConfig.appsScriptUrl,
+      materials,
+      members,
+      prompts,
+      tools,
+      platformSettings
+    );
     setIsSyncing(false);
 
     if (result.success) {
@@ -500,11 +530,12 @@ export default function App() {
         lastError: undefined,
       }));
 
+      const totalItems = materials.length + members.length + prompts.length + tools.length;
       const updatedLogs = addSyncLog({
         type: 'push',
         status: 'success',
-        message: `Menyimpan ${materials.length} materi ke Google Sheets.`,
-        itemsCount: materials.length,
+        message: `Menyimpan ${materials.length} materi, ${members.length} member, ${prompts.length} prompt, ${tools.length} tool, dan pengaturan ke Google Sheets.`,
+        itemsCount: totalItems,
       });
       setSyncLogs(updatedLogs);
       showToast('success', result.message);
@@ -672,6 +703,9 @@ export default function App() {
               syncLogs={syncLogs}
               materialsCount={materials.length}
               membersCount={members.length}
+              promptsCount={prompts.length}
+              toolsCount={tools.length}
+              settings={platformSettings}
               isSyncing={isSyncing}
             />
           </div>

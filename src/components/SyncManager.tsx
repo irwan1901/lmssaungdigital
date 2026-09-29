@@ -13,7 +13,7 @@ import {
   FileCode,
   ShieldCheck,
 } from 'lucide-react';
-import { SyncConfig, SyncLog, LearningMaterial, MemberUser } from '../types';
+import { SyncConfig, SyncLog, LearningMaterial, MemberUser, PlatformSettings } from '../types';
 import { generateAppsScriptCode } from '../services/googleSheetsSync';
 
 interface SyncManagerProps {
@@ -25,6 +25,9 @@ interface SyncManagerProps {
   syncLogs: SyncLog[];
   materialsCount: number;
   membersCount: number;
+  promptsCount?: number;
+  toolsCount?: number;
+  settings?: PlatformSettings;
   isSyncing: boolean;
 }
 
@@ -37,6 +40,9 @@ export const SyncManager: React.FC<SyncManagerProps> = ({
   syncLogs,
   materialsCount,
   membersCount,
+  promptsCount = 0,
+  toolsCount = 0,
+  settings,
   isSyncing,
 }) => {
   const envGasUrl = (import.meta.env.VITE_GAS_API_URL as string) || '';
@@ -282,25 +288,39 @@ export const SyncManager: React.FC<SyncManagerProps> = ({
           <div className="space-y-4">
             <div className="p-5 rounded-2xl bg-[#081224] border border-sky-700/20 space-y-3">
               <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Status Data Saat Ini
+                Status 5 Database Terpadu
               </h4>
 
-              <div className="space-y-2.5 text-xs">
-                <div className="flex justify-between py-1.5 border-b border-slate-800">
-                  <span className="text-slate-400">Total Materi:</span>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between py-1 border-b border-slate-800">
+                  <span className="text-slate-400">1. Materi Belajar:</span>
                   <span className="text-white font-semibold tabular-nums">{materialsCount} Modul</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-slate-800">
-                  <span className="text-slate-400">Total Member:</span>
+                <div className="flex justify-between py-1 border-b border-slate-800">
+                  <span className="text-slate-400">2. Member &amp; Akun:</span>
                   <span className="text-white font-semibold tabular-nums">{membersCount} Akun</span>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-slate-800">
-                  <span className="text-slate-400">Mode Penyimpanan:</span>
-                  <span className="text-sky-300 font-semibold">
-                    {syncConfig.appsScriptUrl ? 'Cloud Google Sheets' : 'Local Storage Cache'}
+                <div className="flex justify-between py-1 border-b border-slate-800">
+                  <span className="text-slate-400">3. UI Prompt Library:</span>
+                  <span className="text-purple-300 font-semibold tabular-nums">{promptsCount} Prompt</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-800">
+                  <span className="text-slate-400">4. UI Member Tools:</span>
+                  <span className="text-emerald-300 font-semibold tabular-nums">{toolsCount} Alat</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-800">
+                  <span className="text-slate-400">5. Pengaturan &amp; Logo:</span>
+                  <span className="text-amber-300 font-semibold">
+                    {settings?.bannerImageUrl ? 'Logo Kustom Aktif' : 'Tersinkron'}
                   </span>
                 </div>
-                <div className="flex justify-between py-1.5">
+                <div className="flex justify-between py-1 border-b border-slate-800">
+                  <span className="text-slate-400">Mode Penyimpanan:</span>
+                  <span className="text-sky-300 font-semibold">
+                    {syncConfig.appsScriptUrl ? 'Cloud Google Sheets (5 Tab)' : 'Local Storage Cache'}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1">
                   <span className="text-slate-400">Terakhir Sync:</span>
                   <span className="text-slate-300">
                     {syncConfig.lastSyncTimestamp || 'Belum pernah'}
@@ -311,10 +331,10 @@ export const SyncManager: React.FC<SyncManagerProps> = ({
 
             <div className="p-5 rounded-2xl bg-[#09172e] border border-sky-600/30 space-y-2.5">
               <h4 className="text-xs font-bold text-amber-300 uppercase tracking-wider">
-                Kesiapan Deploy ke Vercel
+                Multi-Tab Google Sheets
               </h4>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Aplikasi ini 100% kompatibel untuk di-deploy ke Vercel. Menggunakan konfigurasi <code className="text-sky-300">vercel.json</code> bawaan dan koneksi Google Sheets client-side yang aman tanpa memerlukan environment variable rahasia.
+                Skrip Apps Script otomatis menginisialisasi 5 tab terpisah di Google Spreadsheet: <code className="text-sky-300">Materi</code>, <code className="text-yellow-300">Members</code>, <code className="text-purple-300">Prompts</code>, <code className="text-emerald-300">Tools</code>, dan <code className="text-amber-300">Pengaturan</code>.
               </p>
             </div>
           </div>
@@ -326,9 +346,9 @@ export const SyncManager: React.FC<SyncManagerProps> = ({
         <div className="p-6 rounded-2xl bg-[#081224] border border-sky-700/20 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 className="text-base font-bold text-white">Kode Google Apps Script (Code.gs)</h3>
+              <h3 className="text-base font-bold text-white">Kode Google Apps Script (Code.gs) - Versi 5 Database</h3>
               <p className="text-xs text-slate-400">
-                Skrip ini otomatis membuat tab "Materi" &amp; "Members" dengan header kolom lengkap.
+                Skrip ini otomatis membuat dan mengelola 5 tab spreadsheet ("Materi", "Members", "Prompts", "Tools", dan "Pengaturan") lengkap dengan skema kolom terstruktur.
               </p>
             </div>
             <button
