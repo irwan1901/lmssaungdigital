@@ -9,7 +9,7 @@
   "accentColor": "amber",
   "broadcastMessage": "Selamat datang di Portal Saung Digital! Modul baru Android & IoT telah aktif.",
   "isBroadcastActive": false,
-  "bannerImageUrl": "/uploads/portal-logo.webp?v=1790648902754",
+  "bannerImageUrl": "/uploads/portal-logo.webp?v=1790649570955",
   "promptLibraryConfig": {
     "headerTitle": "Prompt Library",
     "headerSubtitle": "Koleksi prompt engineering terkurasi untuk mempercepat workflow pengembangan, pembuatan kode interaktif, dan arsitektur aplikasi.",
