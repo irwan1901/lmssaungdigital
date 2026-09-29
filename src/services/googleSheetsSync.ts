@@ -63,10 +63,10 @@ export const DEFAULT_PLATFORM_SETTINGS: PlatformSettings = {
   adminPassword: 'admin2026',
   allowGuestPreview: true,
   enableSpotlightGlow: true,
-  accentColor: 'emerald',
+  accentColor: 'amber',
   broadcastMessage: 'Selamat datang di Portal Saung Digital! Modul baru Android & IoT telah aktif.',
   isBroadcastActive: false,
-  bannerImageUrl: '/saung_digital_artwork.svg',
+  bannerImageUrl: '/uploads/portal-logo.webp',
   promptLibraryConfig: DEFAULT_PROMPT_LIBRARY_CONFIG,
   memberToolsConfig: DEFAULT_MEMBER_TOOLS_CONFIG,
 };
@@ -497,10 +497,14 @@ export function loadPlatformSettings(): PlatformSettings {
       );
       loadedPromptConfig.categories = ['SEMUA KATEGORI', ...withoutAll];
     }
+    const banner =
+      parsed.bannerImageUrl && parsed.bannerImageUrl !== '/saung_digital_artwork.svg'
+        ? parsed.bannerImageUrl
+        : DEFAULT_PLATFORM_SETTINGS.bannerImageUrl;
     return {
       ...DEFAULT_PLATFORM_SETTINGS,
       ...parsed,
-      bannerImageUrl: parsed.bannerImageUrl || DEFAULT_PLATFORM_SETTINGS.bannerImageUrl,
+      bannerImageUrl: banner,
     };
   } catch {
     return DEFAULT_PLATFORM_SETTINGS;
@@ -514,20 +518,38 @@ export function savePlatformSettings(settings: PlatformSettings) {
 }
 
 /**
- * Fetch settings from the backend server disk (/api/settings)
+ * Fetch settings from the backend server disk (/api/settings) or bundled static (/settings.json) on Vercel
  */
 export async function fetchServerSettings(): Promise<PlatformSettings | null> {
+  // First try dynamic backend API (running when deployed fullstack or locally)
   try {
     const res = await fetch('/api/settings');
-    if (!res.ok) return null;
-    const json = await res.json();
-    if (json && json.success && json.settings) {
-      return json.settings as PlatformSettings;
+    if (res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        const json = await res.json();
+        if (json && json.success && json.settings) {
+          return json.settings as PlatformSettings;
+        }
+      }
     }
-    return null;
-  } catch {
-    return null;
-  }
+  } catch {}
+
+  // Fallback for Vercel Static Deployments: fetch bundled /settings.json
+  try {
+    const staticRes = await fetch('/settings.json');
+    if (staticRes.ok) {
+      const contentType = staticRes.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        const staticJson = await staticRes.json();
+        if (staticJson && typeof staticJson === 'object' && staticJson.platformName) {
+          return staticJson as PlatformSettings;
+        }
+      }
+    }
+  } catch {}
+
+  return null;
 }
 
 /**

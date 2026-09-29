@@ -89,11 +89,13 @@ export const MemberPortal: React.FC<MemberPortalProps> = ({
     };
   }, [bannerImageUrl]);
 
-  // Active banner from prop or IndexedDB with default artwork fallback
+  // Active banner from prop or IndexedDB with default uploaded logo fallback
   const activeBanner = React.useMemo(() => {
-    if (bannerImageUrl === '__indexeddb_banner__') return dbBanner || '/saung_digital_artwork.svg';
-    if (bannerImageUrl && bannerImageUrl.trim() !== '') return bannerImageUrl;
-    return dbBanner || '/saung_digital_artwork.svg';
+    if (bannerImageUrl === '__indexeddb_banner__') return dbBanner || '/uploads/portal-logo.webp';
+    if (bannerImageUrl && bannerImageUrl.trim() !== '' && bannerImageUrl !== '/saung_digital_artwork.svg') {
+      return bannerImageUrl;
+    }
+    return dbBanner || '/uploads/portal-logo.webp';
   }, [bannerImageUrl, dbBanner]);
 
   React.useEffect(() => {

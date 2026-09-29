@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 const dataDir = path.join(__dirname, 'data');
 const uploadsDir = path.join(__dirname, 'public', 'uploads');
 const settingsFile = path.join(dataDir, 'settings.json');
+const publicSettingsFile = path.join(__dirname, 'public', 'settings.json');
 const allDataFile = path.join(dataDir, 'app_data.json');
 
 if (!fs.existsSync(dataDir)) {
@@ -47,6 +48,9 @@ app.post('/api/settings', (req, res) => {
   try {
     const settings = req.body;
     fs.writeFileSync(settingsFile, JSON.stringify(settings, null, 2), 'utf-8');
+    try {
+      fs.writeFileSync(publicSettingsFile, JSON.stringify(settings, null, 2), 'utf-8');
+    } catch {}
     return res.json({ success: true, settings, message: 'Settings saved to server disk' });
   } catch (err: any) {
     return res.status(500).json({ success: false, error: err.message });
@@ -81,18 +85,21 @@ app.post('/api/upload-logo', (req, res) => {
 
     const publicUrl = `/uploads/${safeName}?v=${Date.now()}`;
 
-    // Auto update settings.json
+    // Auto update settings.json and public/settings.json
+    let updatedSettings: any = { bannerImageUrl: publicUrl };
     if (fs.existsSync(settingsFile)) {
       try {
         const existing = JSON.parse(fs.readFileSync(settingsFile, 'utf-8'));
         existing.bannerImageUrl = publicUrl;
-        fs.writeFileSync(settingsFile, JSON.stringify(existing, null, 2), 'utf-8');
+        updatedSettings = existing;
       } catch {
         // ignore
       }
-    } else {
-      fs.writeFileSync(settingsFile, JSON.stringify({ bannerImageUrl: publicUrl }, null, 2), 'utf-8');
     }
+    fs.writeFileSync(settingsFile, JSON.stringify(updatedSettings, null, 2), 'utf-8');
+    try {
+      fs.writeFileSync(publicSettingsFile, JSON.stringify(updatedSettings, null, 2), 'utf-8');
+    } catch {}
 
     return res.json({
       success: true,

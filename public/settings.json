@@ -1,0 +1,42 @@
+{
+  "platformName": "SAUNG DIGITAL",
+  "tagline": "KOLABORASI • INOVASI • TEKNOLOGI • MASA DEPAN",
+  "portalDescription": "Koleksi materi, video YouTube, modul Android, Coding, Robotika, AI & IoT dalam satu ekosistem pembelajaran.",
+  "adminContactEmail": "admin@saungdigital.id",
+  "adminPassword": "admin2026",
+  "allowGuestPreview": true,
+  "enableSpotlightGlow": true,
+  "accentColor": "amber",
+  "broadcastMessage": "Selamat datang di Portal Saung Digital! Modul baru Android & IoT telah aktif.",
+  "isBroadcastActive": false,
+  "bannerImageUrl": "/uploads/portal-logo.webp?v=1790648902754",
+  "promptLibraryConfig": {
+    "headerTitle": "Prompt Library",
+    "headerSubtitle": "Koleksi prompt engineering terkurasi untuk mempercepat workflow pengembangan, pembuatan kode interaktif, dan arsitektur aplikasi.",
+    "badgeText": "Koleksi Terverifikasi AI Studio",
+    "categories": [
+      "SEMUA KATEGORI",
+      "INTERACTIVE BACKGROUND",
+      "HERO BANNER & 3D",
+      "NEON GLASSMORPHISM",
+      "CARDS & SPOTLIGHT",
+      "NAVIGATION & MENU",
+      "DATA VISUALIZATION",
+      "BUTTONS & MICRO-INTERACTIONS",
+      "UI/UX & Frontend",
+      "ANDROID JETPACK COMPOSE",
+      "Android & Kotlin",
+      "GOOGLE APPS SCRIPT API",
+      "Fullstack & Backend",
+      "IOT & ESP32 ROBOTICS",
+      "IoT & Robotics",
+      "AI & SYSTEM PROMPT",
+      "AI & System Prompt"
+    ]
+  },
+  "memberToolsConfig": {
+    "headerTitle": "Tools",
+    "headerSubtitle": "Kumpulan tools pendukung yang telah dipublikasikan oleh Admin.",
+    "badgeIcon": "🧰"
+  }
+}
