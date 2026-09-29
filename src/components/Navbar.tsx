@@ -28,6 +28,7 @@ interface NavbarProps {
   syncConfig: SyncConfig;
   onTriggerSync: () => void;
   isSyncing: boolean;
+  customLogoUrl?: string;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -42,6 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   syncConfig,
   onTriggerSync,
   isSyncing,
+  customLogoUrl,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -56,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           }}
           className="flex items-center gap-3 text-left focus:outline-none group cursor-pointer"
         >
-          <SaungDigitalLogo size="md" />
+          <SaungDigitalLogo size="md" customLogoUrl={customLogoUrl} />
         </button>
 
         {/* Zone 2: Navigation Links (Desktop) */}

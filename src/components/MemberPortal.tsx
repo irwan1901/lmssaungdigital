@@ -496,6 +496,7 @@ export const MemberPortal: React.FC<MemberPortalProps> = ({
           onOpenLoginModal={onOpenLoginModal}
           prompts={prompts}
           config={settings?.promptLibraryConfig}
+          customLogoUrl={activeBanner}
         />
       )}
 

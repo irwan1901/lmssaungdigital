@@ -4,12 +4,14 @@ interface SaungDigitalLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'hero';
   showText?: boolean;
   className?: string;
+  customLogoUrl?: string;
 }
 
 export const SaungDigitalLogo: React.FC<SaungDigitalLogoProps> = ({
   size = 'md',
   showText = true,
   className = '',
+  customLogoUrl,
 }) => {
   const dimensions = {
     sm: { icon: 34, title: 'text-sm', sub: 'text-[9px]', gap: 'gap-2' },
@@ -22,69 +24,82 @@ export const SaungDigitalLogo: React.FC<SaungDigitalLogoProps> = ({
 
   return (
     <div className={`inline-flex items-center ${dimensions.gap} ${className}`}>
-      {/* Neon Cyber Saung House Emblem */}
-      <div
-        className="relative shrink-0 flex items-center justify-center rounded-2xl bg-[#071326] p-1.5 border border-sky-400/40 shadow-lg shadow-sky-500/20 group hover:border-emerald-400 transition-colors"
-        style={{ width: iconDim, height: iconDim }}
-      >
-        <svg
-          viewBox="0 0 100 100"
-          className="w-full h-full drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      {/* Custom Uploaded Logo or Neon Cyber Saung House Emblem */}
+      {customLogoUrl ? (
+        <div
+          className="relative shrink-0 flex items-center justify-center rounded-2xl bg-[#071326] p-1 border border-sky-400/40 shadow-lg shadow-sky-500/20 overflow-hidden group hover:border-emerald-400 transition-colors"
+          style={{ width: iconDim, height: iconDim }}
         >
-          {/* Saung House Gable / Roof Contour */}
-          <path
-            d="M50 12 L84 40 L84 84 L16 84 L16 40 Z"
-            stroke="#38bdf8"
-            strokeWidth="4"
-            strokeLinejoin="round"
-            fill="#091830"
+          <img
+            src={customLogoUrl}
+            alt="Logo Portal"
+            className="w-full h-full object-contain rounded-xl"
           />
+        </div>
+      ) : (
+        <div
+          className="relative shrink-0 flex items-center justify-center rounded-2xl bg-[#071326] p-1.5 border border-sky-400/40 shadow-lg shadow-sky-500/20 group hover:border-emerald-400 transition-colors"
+          style={{ width: iconDim, height: iconDim }}
+        >
+          <svg
+            viewBox="0 0 100 100"
+            className="w-full h-full drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {/* Saung House Gable / Roof Contour */}
+            <path
+              d="M50 12 L84 40 L84 84 L16 84 L16 40 Z"
+              stroke="#38bdf8"
+              strokeWidth="4"
+              strokeLinejoin="round"
+              fill="#091830"
+            />
 
-          {/* Roof Ridge Accents */}
-          <path
-            d="M50 12 L16 40"
-            stroke="#7dd3fc"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M50 12 L84 40"
-            stroke="#7dd3fc"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-          />
+            {/* Roof Ridge Accents */}
+            <path
+              d="M50 12 L16 40"
+              stroke="#7dd3fc"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+            />
+            <path
+              d="M50 12 L84 40"
+              stroke="#7dd3fc"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+            />
 
-          {/* Cyber Circuit Tree / Wifi Signal inside house */}
-          {/* Circuit trunk */}
-          <path d="M50 74 V46" stroke="#22c55e" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="50" cy="74" r="3" fill="#22c55e" />
+            {/* Cyber Circuit Tree / Wifi Signal inside house */}
+            {/* Circuit trunk */}
+            <path d="M50 74 V46" stroke="#22c55e" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="50" cy="74" r="3" fill="#22c55e" />
 
-          {/* Left Circuit Branch */}
-          <path d="M50 56 H36 V42" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" />
-          <circle cx="36" cy="42" r="3" fill="#4ade80" />
+            {/* Left Circuit Branch */}
+            <path d="M50 56 H36 V42" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="36" cy="42" r="3" fill="#4ade80" />
 
-          {/* Right Circuit Branch */}
-          <path d="M50 62 H64 V48" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" />
-          <circle cx="64" cy="48" r="3" fill="#4ade80" />
+            {/* Right Circuit Branch */}
+            <path d="M50 62 H64 V48" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="64" cy="48" r="3" fill="#4ade80" />
 
-          {/* Wifi Broadcast Wave atop circuit */}
-          <path
-            d="M40 38 C45 34, 55 34, 60 38"
-            stroke="#38bdf8"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M44 42 C47 39, 53 39, 56 42"
-            stroke="#38bdf8"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <circle cx="50" cy="46" r="2.5" fill="#38bdf8" />
-        </svg>
-      </div>
+            {/* Wifi Broadcast Wave atop circuit */}
+            <path
+              d="M40 38 C45 34, 55 34, 60 38"
+              stroke="#38bdf8"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            <path
+              d="M44 42 C47 39, 53 39, 56 42"
+              stroke="#38bdf8"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            <circle cx="50" cy="46" r="2.5" fill="#38bdf8" />
+          </svg>
+        </div>
+      )}
 
       {/* Typography: SAUNG (White) DIGITAL (Neon Green) */}
       {showText && (

@@ -21,6 +21,7 @@ import {
   pushToGoogleSheet,
   loadPlatformSettings,
   savePlatformSettings,
+  fetchServerSettings,
   loadPrompts,
   savePrompts,
   loadTools,
@@ -89,6 +90,21 @@ export default function App() {
   // Cleanup old duplicate or bloated localStorage keys on initial mount
   useEffect(() => {
     cleanupStorageQuota();
+
+    // Fetch permanent settings & logo from server so every visitor and device gets the updated logo
+    fetchServerSettings().then((remoteSettings) => {
+      if (remoteSettings) {
+        setPlatformSettings((prev) => {
+          const merged = {
+            ...prev,
+            ...remoteSettings,
+            bannerImageUrl: remoteSettings.bannerImageUrl || prev.bannerImageUrl,
+          };
+          savePlatformSettings(merged);
+          return merged;
+        });
+      }
+    });
   }, []);
 
   // Sync to localStorage whenever data changes

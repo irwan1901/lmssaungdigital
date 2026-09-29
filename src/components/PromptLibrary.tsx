@@ -23,6 +23,7 @@ interface PromptLibraryProps {
   onOpenLoginModal: () => void;
   prompts?: PromptItem[];
   config?: PromptLibraryConfig;
+  customLogoUrl?: string;
 }
 
 const CATEGORIES_LIST = [
@@ -49,6 +50,7 @@ export const PromptLibrary: React.FC<PromptLibraryProps> = ({
   onOpenLoginModal,
   prompts: externalPrompts,
   config,
+  customLogoUrl,
 }) => {
   // Load custom + initial prompts
   const [localPrompts] = useState<PromptItem[]>(() => {
@@ -175,7 +177,7 @@ export const PromptLibrary: React.FC<PromptLibraryProps> = ({
 
           {/* Logo Mascot with Brand */}
           <div className="shrink-0 flex items-center justify-center p-3 rounded-2xl bg-[#060f1f]/80 border border-sky-500/30 shadow-inner">
-            <SaungDigitalLogo size="hero" showText={true} />
+            <SaungDigitalLogo size="hero" showText={true} customLogoUrl={customLogoUrl} />
           </div>
 
           {/* Content Info */}

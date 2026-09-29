@@ -509,7 +509,69 @@ export function loadPlatformSettings(): PlatformSettings {
 
 export function savePlatformSettings(settings: PlatformSettings) {
   safeLocalStorageSet(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
+  // Asynchronously persist to server so other users and devices immediately receive changes
+  saveServerSettings(settings).catch(() => {});
 }
+
+/**
+ * Fetch settings from the backend server disk (/api/settings)
+ */
+export async function fetchServerSettings(): Promise<PlatformSettings | null> {
+  try {
+    const res = await fetch('/api/settings');
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (json && json.success && json.settings) {
+      return json.settings as PlatformSettings;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Save settings to the backend server disk (/api/settings)
+ */
+export async function saveServerSettings(settings: PlatformSettings): Promise<boolean> {
+  try {
+    const res = await fetch('/api/settings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(settings),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Upload logo image file dataUrl to the backend server (/api/upload-logo)
+ * Returns the persistent static public URL (e.g. /uploads/portal-logo.png?v=...)
+ */
+export async function uploadLogoToServer(imageDataUrl: string): Promise<string | null> {
+  try {
+    const res = await fetch('/api/upload-logo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ image: imageDataUrl }),
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (json && json.success && json.url) {
+      return json.url;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 
 export function deduplicatePrompts(list: PromptItem[]): PromptItem[] {
   if (!Array.isArray(list)) return [];

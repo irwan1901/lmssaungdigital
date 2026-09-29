@@ -44,7 +44,7 @@ import {
   PromptItem,
   ToolItem,
 } from '../types';
-import { DEFAULT_PLATFORM_SETTINGS, deduplicateMembers } from '../services/googleSheetsSync';
+import { DEFAULT_PLATFORM_SETTINGS, deduplicateMembers, uploadLogoToServer, saveServerSettings } from '../services/googleSheetsSync';
 import { optimizeImageFile, saveAssetToIndexedDB, cleanupStorageQuota } from '../services/storageHelper';
 import { SpotlightGlowCard } from './SpotlightGlowCard';
 import { AdminPromptManager } from './AdminPromptManager';
@@ -302,45 +302,63 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       // Automatically compress and resize to ~30-70 KB to completely avoid localStorage quota errors
       const optimizedDataUrl = await optimizeImageFile(file, 960, 540, 0.82);
 
-      const updated = { ...tempSettings, bannerImageUrl: optimizedDataUrl };
-      setTempSettings(updated);
-      setCustomBannerPreview(optimizedDataUrl);
+      // Persist permanently to server disk so every visitor / device gets this logo
+      let finalImageUrl = optimizedDataUrl;
+      try {
+        const serverUrl = await uploadLogoToServer(optimizedDataUrl);
+        if (serverUrl) {
+          finalImageUrl = serverUrl;
+        }
+      } catch (err) {
+        console.warn('Gagal upload ke server disk, menggunakan penyimpanan dataUrl:', err);
+      }
 
-      // Save to IndexedDB for backup
-      saveAssetToIndexedDB('banner_image', optimizedDataUrl);
+      const updated = { ...tempSettings, bannerImageUrl: finalImageUrl };
+      setTempSettings(updated);
+      setCustomBannerPreview(finalImageUrl);
+
+      // Save to IndexedDB for offline backup
+      saveAssetToIndexedDB('banner_image', finalImageUrl);
 
       // Clean up legacy keys
       cleanupStorageQuota();
 
       // Immediately sync to platformSettings so home page updates in real-time
       onUpdateSettings(updated);
+
+      // Persist settings to server disk
+      await saveServerSettings(updated);
+      showToast?.('success', 'Logo berhasil diperbarui dan disimpan secara permanen!');
     } catch (err) {
       console.error('Gagal mengoptimalkan gambar:', err);
+      showToast?.('error', 'Gagal memproses gambar logo.');
     } finally {
       setIsOptimizingBanner(false);
       e.target.value = '';
     }
   };
 
-  const handleRemoveBannerImage = () => {
+  const handleRemoveBannerImage = async () => {
     const updated = { ...tempSettings, bannerImageUrl: '' };
     setTempSettings(updated);
     setCustomBannerPreview('');
     cleanupStorageQuota();
     saveAssetToIndexedDB('banner_image', '');
     onUpdateSettings(updated);
-    showToast?.('info', 'Gambar banner berhasil dihapus.');
+    await saveServerSettings(updated);
+    showToast?.('info', 'Gambar logo kustom berhasil dihapus.');
   };
 
   // Settings Handlers
-  const handleSaveSettings = (e: React.FormEvent) => {
+  const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     cleanupStorageQuota();
     if (tempSettings.bannerImageUrl) {
       saveAssetToIndexedDB('banner_image', tempSettings.bannerImageUrl);
     }
     onUpdateSettings(tempSettings);
-    showToast?.('success', 'Pengaturan berhasil disimpan!');
+    await saveServerSettings(tempSettings);
+    showToast?.('success', 'Pengaturan berhasil disimpan secara permanen!');
     setSettingsSavedToast(true);
     setTimeout(() => setSettingsSavedToast(false), 3000);
   };
